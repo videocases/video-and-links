@@ -452,7 +452,7 @@
             border-left-color: white;
         }
         
-        /* Loading indicator with spinner */
+        /* Loading indicator with spinner - УДАЛЕНА ПОДЛОЖКА */
         .loading-indicator {
             position: absolute;
             top: 50%;
@@ -460,9 +460,7 @@
             transform: translate(-50%, -50%);
             color: white;
             font-size: 0.9rem;
-            background: rgba(0,0,0,0.7);
-            padding: 8px 12px;
-            border-radius: 4px;
+            /* Убраны background, padding и border-radius */
             z-index: 6;
             display: none;
             align-items: center;
@@ -485,8 +483,6 @@
         .video-loading .loading-indicator {
             display: flex;
         }
-        
-        /* Убрали стили ошибок - они отвлекают пользователя */
         
         /* Photo project styles */
         .photo-container {
@@ -933,7 +929,7 @@
                 <!-- Project 1 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-container" aria-label="Видео: Интервью с участниками выставки и лекция">
-                        <video class="video-player" data-video-id="1" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-1-description" aria-label="Интервью с участниками выставки и лекция"></video>
+                        <video class="video-player" data-video-id="1" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-1-description" aria-label="Интервью с участниками выставки и лекция"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -973,7 +969,7 @@
                 <!-- Project 2 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-container" aria-label="Видео: Визажист выбирает, тестирует косметику">
-                        <video class="video-player" data-video-id="2" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-2-description" aria-label="Визажист выбирает, тестирует косметику"></video>
+                        <video class="video-player" data-video-id="2" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-2-description" aria-label="Визажист выбирает, тестирует косметику"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1013,7 +1009,7 @@
                 <!-- Project 3 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-container" aria-label="Видео: Участники викторины получают призы">
-                        <video class="video-player" data-video-id="3" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-3-description" aria-label="Участники викторины получают призы"></video>
+                        <video class="video-player" data-video-id="3" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-3-description" aria-label="Участники викторины получают призы"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1053,7 +1049,7 @@
                 <!-- Project 4 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-container" aria-label="Видео: Поздравление от коллег">
-                        <video class="video-player" data-video-id="4" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-4-description" aria-label="Поздравление от коллег"></video>
+                        <video class="video-player" data-video-id="4" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-4-description" aria-label="Поздравление от коллег"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1093,7 +1089,7 @@
                 <!-- Project 5 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-container" aria-label="Видео: Различные антистресс-игрушки">
-                        <video class="video-player" data-video-id="5" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-5-description" aria-label="Различные антистресс-игрушки"></video>
+                        <video class="video-player" data-video-id="5" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-5-description" aria-label="Различные антистресс-игрушки"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1133,7 +1129,7 @@
                 <!-- Project 6 -->
                 <div class="portfolio-item" data-tags="motion design">
                     <div class="video-container" aria-label="Видео: Советы по продажам">
-                        <video class="video-player" data-video-id="6" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-6-description" aria-label="Советы по продажам"></video>
+                        <video class="video-player" data-video-id="6" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-6-description" aria-label="Советы по продажам"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1172,7 +1168,7 @@
                 <!-- Project 7 -->
                 <div class="portfolio-item" data-tags="motion design">
                     <div class="video-container" aria-label="Видео: Баннер-поздравление">
-                        <video class="video-player" data-video-id="7" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-7-description" aria-label="Баннер-поздравление"></video>
+                        <video class="video-player" data-video-id="7" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-7-description" aria-label="Баннер-поздравление"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1211,7 +1207,7 @@
                 <!-- Project 8 - Photo Project -->
                 <div class="portfolio-item" data-tags="фотосъемка ретушь">
                     <div class="photo-container" aria-label="Фото: Товары для школы">
-                        <img class="photo-item" data-photo-id="8" src="" alt="Товары для школы - фотография" crossorigin="anonymous" width="800" height="450">
+                        <img class="photo-item" data-photo-id="8" src="" alt="Товары для школы - фотография" width="800" height="450">
                         <div class="photo-overlay">
                             <button class="photo-play-button pulse" aria-label="Посмотреть фото в полном размере: Товары для школы"></button>
                         </div>
@@ -1249,7 +1245,7 @@
                 <!-- Project 9 - Photo Project -->
                 <div class="portfolio-item" data-tags="фотосъемка ретушь">
                     <div class="photo-container" aria-label="Фото: Новогоднее оформление">
-                        <img class="photo-item" data-photo-id="9" src="" alt="Новогоднее оформление - фотография" crossorigin="anonymous" width="800" height="450">
+                        <img class="photo-item" data-photo-id="9" src="" alt="Новогоднее оформление - фотография" width="800" height="450">
                         <div class="photo-overlay">
                             <button class="photo-play-button pulse" aria-label="Посмотреть фото в полном размере: Новогоднее оформление"></button>
                         </div>
@@ -1287,7 +1283,7 @@
                 <!-- Project 10 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-container" aria-label="Видео: Технологии сервиса доставки готовой еды">
-                        <video class="video-player" data-video-id="10" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-10-description" aria-label="Технологии сервиса доставки готовой еды"></video>
+                        <video class="video-player" data-video-id="10" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-10-description" aria-label="Технологии сервиса доставки готовой еды"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1327,7 +1323,7 @@
                 <!-- Project 11 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-container" aria-label="Видео: Приготовления к приему гостей в доме">
-                        <video class="video-player" data-video-id="11" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-11-description" aria-label="Приготовления к приему гостей в доме"></video>
+                        <video class="video-player" data-video-id="11" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-11-description" aria-label="Приготовления к приему гостей в доме"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1366,7 +1362,7 @@
                 <!-- Project 12 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-container" aria-label="Видео: Строительство центра обработки данных">
-                        <video class="video-player" data-video-id="12" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-12-description" aria-label="Строительство центра обработки данных"></video>
+                        <video class="video-player" data-video-id="12" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-12-description" aria-label="Строительство центра обработки данных"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1405,7 +1401,7 @@
                 <!-- Project 13 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-container" aria-label="Видео: Нарезка из видео, которое отснял (исходники)">
-                        <video class="video-player" data-video-id="13" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-13-description" aria-label="Нарезка из видео, которое отснял (исходники)"></video>
+                        <video class="video-player" data-video-id="13" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-13-description" aria-label="Нарезка из видео, которое отснял (исходники)"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1444,7 +1440,7 @@
                 <!-- Project 14 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-container" aria-label="Видео: Экологичное мышление в бизнесе">
-                        <video class="video-player" data-video-id="14" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-14-description" aria-label="Экологичное мышление в бизнесе"></video>
+                        <video class="video-player" data-video-id="14" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-14-description" aria-label="Экологичное мышление в бизнесе"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1484,7 +1480,7 @@
                 <!-- Project 15 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-container" aria-label="Видео: Акция по безопасности дорожного движения">
-                        <video class="video-player" data-video-id="15" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-15-description" aria-label="Акция по безопасности дорожного движения"></video>
+                        <video class="video-player" data-video-id="15" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-15-description" aria-label="Акция по безопасности дорожного движения"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1523,7 +1519,7 @@
                 <!-- Project 16 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-container" aria-label="Видео: Путь от инженера до стилиста">
-                        <video class="video-player" data-video-id="16" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-16-description" aria-label="Путь от инженера до стилиста"></video>
+                        <video class="video-player" data-video-id="16" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-16-description" aria-label="Путь от инженера до стилиста"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1562,7 +1558,7 @@
                 <!-- Project 17 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-container" aria-label="Видео: Производство детских каш и смесей">
-                        <video class="video-player" data-video-id="17" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-17-description" aria-label="Производство детских каш и смесей"></video>
+                        <video class="video-player" data-video-id="17" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-17-description" aria-label="Производство детских каш и смесей"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1602,7 +1598,7 @@
                 <!-- Project 18 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-container" aria-label="Видео: Прямая трансляция музыкального фестиваля">
-                        <video class="video-player" data-video-id="18" muted playsinline preload="metadata" crossorigin="anonymous" width="800" height="450" aria-describedby="video-18-description" aria-label="Прямая трансляция музыкального фестиваля"></video>
+                        <video class="video-player" data-video-id="18" muted playsinline preload="metadata" width="800" height="450" aria-describedby="video-18-description" aria-label="Прямая трансляция музыкального фестиваля"></video>
                         <div class="loading-indicator">
                             <div class="spinner"></div>
                             Загрузка...
@@ -1645,7 +1641,7 @@
             <div class="modal-content">
                 <button class="close-modal" aria-label="Закрыть видео">×</button>
                 <div class="modal-video-container" aria-label="Полноэкранное видео">
-                    <video class="modal-video" controls crossorigin="anonymous" aria-label="Полноэкранное видео"></video>
+                    <video class="modal-video" controls aria-label="Полноэкранное видео"></video>
                 </div>
             </div>
         </div>
@@ -1655,7 +1651,7 @@
             <div class="modal-content">
                 <button class="close-modal" aria-label="Закрыть фото">×</button>
                 <div class="modal-photo-container" aria-label="Полноэкранное фото">
-                    <img class="modal-photo" alt="Полноэкранное фото" aria-label="Полноэкранное фото" crossorigin="anonymous">
+                    <img class="modal-photo" alt="Полноэкранное фото" aria-label="Полноэкранное фото">
                 </div>
             </div>
         </div>
@@ -1908,40 +1904,16 @@
         }
 
         // ===============================
-        // PWA SERVICE WORKER
+        // УЛУЧШЕННАЯ ЗАГРУЗКА ПЕРВОГО КАДРА ДЛЯ SAFARI
         // ===============================
 
-        // Регистрация Service Worker для PWA - ИСПРАВЛЕН ПУТЬ
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('./service-worker.js')
-                  .then(function(registration) {
-                    console.log('ServiceWorker registration successful');
-                  })
-                  .catch(function(error) {
-                    console.log('ServiceWorker registration failed: ', error);
-                  });
-            });
-        }
-
-        // ===============================
-        // ИНИЦИАЛИЗАЦИЯ И ФУНКЦИОНАЛ
-        // ===============================
-
-        // Инициализация ротатора
-        const dropboxRotator = new DropboxRotator();
-
-        // Инициализация фильтра
-        const portfolioFilter = new PortfolioFilter();
-
-        // Lazy loading with IntersectionObserver and network error handling
         function setupLazyLoading() {
             const videoPlayers = document.querySelectorAll('.video-player');
             const photoItems = document.querySelectorAll('.photo-item');
             
             const observerOptions = {
                 root: null,
-                rootMargin: '0px',
+                rootMargin: '50px', // Начинаем загрузку заранее
                 threshold: 0.1
             };
             
@@ -1954,49 +1926,8 @@
                         const videoId = video.getAttribute('data-video-id');
                         
                         if (videoSrc && !video.src) {
-                            video.src = videoSrc;
-                            videoContainer.classList.add('video-loading');
-                            
-                            const loadingIndicator = videoContainer.querySelector('.loading-indicator');
-                            
-                            let retryCount = 0;
-                            const maxRetries = 3;
-                            
-                            video.addEventListener('loadeddata', () => {
-                                videoContainer.classList.add('video-loaded');
-                                videoContainer.classList.remove('video-loading');
-                                loadingIndicator.style.display = 'none';
-                            });
-                            
-                            video.addEventListener('canplay', () => {
-                                loadingIndicator.style.display = 'none';
-                            });
-                            
-                            video.addEventListener('error', () => {
-                                // УБРАЛИ ДОБАВЛЕНИЕ КЛАССА ОШИБКИ - ЭТО ОТВЛЕКАЕТ ПОЛЬЗОВАТЕЛЯ
-                                
-                                // Используем ротатор для обработки ошибки
-                                dropboxRotator.handleVideoError(video, videoId);
-                                
-                                if (retryCount < maxRetries) {
-                                    retryCount++;
-                                    setTimeout(() => {
-                                        video.load();
-                                    }, 2000 * retryCount);
-                                } else {
-                                    // После исчерпания попыток скрываем индикатор загрузки
-                                    loadingIndicator.style.display = 'none';
-                                }
-                            });
-                            
-                            video.addEventListener('waiting', () => {
-                                loadingIndicator.textContent = 'Буферизация...';
-                                loadingIndicator.style.display = 'flex';
-                            });
-                            
-                            video.addEventListener('playing', () => {
-                                loadingIndicator.style.display = 'none';
-                            });
+                            // Применяем улучшенный метод для Safari
+                            loadVideoWithFirstFrame(video, videoSrc, videoContainer, videoId);
                         }
                         
                         videoObserver.unobserve(video);
@@ -2023,6 +1954,145 @@
                     
                     photo.src = newSource;
                 });
+            });
+        }
+
+        // Улучшенная функция загрузки видео с первым кадром
+        function loadVideoWithFirstFrame(video, videoSrc, videoContainer, videoId) {
+            const loadingIndicator = videoContainer.querySelector('.loading-indicator');
+            const playButton = videoContainer.querySelector('.play-button');
+            
+            let retryCount = 0;
+            const maxRetries = 3;
+            
+            // Показываем индикатор загрузки
+            videoContainer.classList.add('video-loading');
+            loadingIndicator.style.display = 'flex';
+            
+            // Устанавливаем источник видео
+            video.src = videoSrc + '#t=0.001'; // Добавляем временную метку
+            
+            // Добавляем необходимые атрибуты для Safari
+            video.setAttribute('preload', 'metadata');
+            video.setAttribute('muted', '');
+            video.setAttribute('playsinline', '');
+            
+            const handleVideoReady = () => {
+                videoContainer.classList.remove('video-loading');
+                videoContainer.classList.add('video-loaded');
+                loadingIndicator.style.display = 'none';
+                
+                // Убираем пульсацию с кнопки воспроизведения
+                setTimeout(() => {
+                    playButton.classList.remove('pulse');
+                }, 1000);
+            };
+            
+            const handleVideoError = () => {
+                retryCount++;
+                
+                if (retryCount < maxRetries) {
+                    // Используем ротатор для смены источника
+                    dropboxRotator.handleVideoError(video, videoId);
+                    const newSrc = video.getAttribute('data-src');
+                    
+                    setTimeout(() => {
+                        video.src = newSrc + '#t=0.001';
+                        video.load();
+                    }, 1000 * retryCount);
+                } else {
+                    // После исчерпания попыток скрываем индикатор
+                    loadingIndicator.style.display = 'none';
+                    videoContainer.classList.remove('video-loading');
+                }
+            };
+            
+            // Основная стратегия загрузки первого кадра для Safari
+            const safariFirstFrameStrategy = () => {
+                // Стратегия 1: Используем события загрузки метаданных
+                video.addEventListener('loadedmetadata', function onMetadataLoaded() {
+                    video.removeEventListener('loadedmetadata', onMetadataLoaded);
+                    
+                    // Пытаемся установить текущее время для загрузки первого кадра
+                    if (video.readyState >= 1) { // HAVE_METADATA
+                        video.currentTime = 0.001;
+                        
+                        // Стратегия 2: Короткое воспроизведение для активации декодера
+                        setTimeout(() => {
+                            video.muted = true;
+                            video.play().then(() => {
+                                // Немедленно ставим на паузу после начала воспроизведения
+                                setTimeout(() => {
+                                    video.pause();
+                                    video.currentTime = 0;
+                                    handleVideoReady();
+                                }, 50);
+                            }).catch(() => {
+                                // Если автовоспроизведение заблокировано, все равно считаем загруженным
+                                handleVideoReady();
+                            });
+                        }, 100);
+                    } else {
+                        handleVideoReady();
+                    }
+                }, { once: true });
+            };
+            
+            // Стратегия 3: Fallback для других браузеров
+            const fallbackStrategy = () => {
+                video.addEventListener('canplay', function onCanPlay() {
+                    video.removeEventListener('canplay', onCanPlay);
+                    handleVideoReady();
+                }, { once: true });
+                
+                // Таймаут на случай если события не сработают
+                setTimeout(handleVideoReady, 3000);
+            };
+            
+            // Определяем браузер и применяем соответствующую стратегию
+            const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+            
+            if (isSafari) {
+                safariFirstFrameStrategy();
+            } else {
+                fallbackStrategy();
+            }
+            
+            // Обработчики ошибок
+            video.addEventListener('error', handleVideoError);
+            
+            // Дополнительные обработчики для лучшего UX
+            // УДАЛЕН обработчик 'waiting' для буферизации
+            video.addEventListener('playing', () => {
+                loadingIndicator.style.display = 'none';
+            });
+            
+            // Очистка обработчиков при успешной загрузке
+            video.addEventListener('canplay', () => {
+                video.removeEventListener('error', handleVideoError);
+            }, { once: true });
+        }
+
+        // ===============================
+        // ДОПОЛНИТЕЛЬНЫЕ УЛУЧШЕНИЯ ДЛЯ SAFARI
+        // ===============================
+
+        // Функция для принудительной предзагрузки видимых видео
+        function preloadVisibleVideos() {
+            const videoPlayers = document.querySelectorAll('.video-player[data-src]:not([src])');
+            
+            videoPlayers.forEach(video => {
+                const rect = video.getBoundingClientRect();
+                if (rect.top < window.innerHeight + 500 && rect.bottom > -500) {
+                    // Видео в зоне видимости или скоро будет
+                    const videoSrc = video.getAttribute('data-src');
+                    const videoContainer = video.parentElement;
+                    const videoId = video.getAttribute('data-video-id');
+                    
+                    if (videoSrc && !video.src) {
+                        loadVideoWithFirstFrame(video, videoSrc, videoContainer, videoId);
+                    }
+                }
             });
         }
 
@@ -2154,12 +2224,49 @@
             });
         }
 
+        // ===============================
+        // PWA SERVICE WORKER
+        // ===============================
+
+        // Регистрация Service Worker для PWA - ИСПРАВЛЕН ПУТЬ
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./service-worker.js')
+                  .then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                  })
+                  .catch(function(error) {
+                    console.log('ServiceWorker registration failed: ', error);
+                  });
+            });
+        }
+
+        // ===============================
+        // ИНИЦИАЛИЗАЦИЯ И ФУНКЦИОНАЛ
+        // ===============================
+
+        // Инициализация ротатора
+        const dropboxRotator = new DropboxRotator();
+
+        // Инициализация фильтра
+        const portfolioFilter = new PortfolioFilter();
+
         // Initialize all functionality
         document.addEventListener('DOMContentLoaded', function() {
             // Ротатор уже инициализирован выше и установил data-src
             setupLazyLoading();
             setupVideoControls();
             setupPhotoControls();
+            
+            // Предзагрузка видимых видео
+            setTimeout(preloadVisibleVideos, 1000);
+            
+            // Также предзагружаем при скролле
+            let scrollTimeout;
+            window.addEventListener('scroll', () => {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(preloadVisibleVideos, 100);
+            });
             
             // Remove pulse animation after initial load
             setTimeout(() => {
