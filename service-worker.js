@@ -1,6 +1,6 @@
-const CACHE_NAME = 'videoportfolio-v4';
-const STATIC_CACHE = 'static-v4';
-const DYNAMIC_CACHE = 'dynamic-v4';
+const CACHE_NAME = 'videoportfolio-v5';
+const STATIC_CACHE = 'static-v5';
+const DYNAMIC_CACHE = 'dynamic-v5';
 
 // Статические ресурсы для кэширования
 const staticAssets = [
@@ -18,23 +18,35 @@ const openCache = async (cacheName) => {
 
 // Функция для кэширования статических ресурсов
 const cacheStaticAssets = async () => {
-    const cache = await openCache(STATIC_CACHE);
-    return await cache.addAll(staticAssets);
+    try {
+        const cache = await openCache(STATIC_CACHE);
+        return await cache.addAll(staticAssets);
+    } catch (error) {
+        console.log('Cache static assets error:', error);
+    }
 };
 
 // Функция для кэширования динамических запросов
 const cacheDynamicData = async (request, response) => {
-    const cache = await openCache(DYNAMIC_CACHE);
-    await cache.put(request, response.clone());
-    return response;
+    try {
+        const cache = await openCache(DYNAMIC_CACHE);
+        await cache.put(request, response.clone());
+        return response;
+    } catch (error) {
+        console.log('Cache dynamic data error:', error);
+        return response;
+    }
 };
 
-// Проверка, является ли запрос видео
+// Проверка, является ли запрос видео (без опциональной цепочки)
 const isVideoRequest = (request) => {
     const url = request.url.toLowerCase();
+    const acceptHeader = request.headers.get('Accept');
     return url.includes('.mp4') || 
+           url.includes('.webm') ||
+           url.includes('.avi') ||
            url.includes('dropboxusercontent.com') ||
-           request.headers.get('Accept')?.includes('video') ||
+           (acceptHeader && acceptHeader.includes('video')) ||
            url.includes('video');
 };
 
@@ -44,23 +56,25 @@ const isLargeFile = (request) => {
     return url.includes('large') || 
            url.includes('big') ||
            url.includes('highres') ||
-           url.includes('original');
+           url.includes('original') ||
+           url.includes('raw') ||
+           url.includes('uncompressed');
 };
 
 // Функция для получения из кэша с fallback
 const getFromCache = async (request) => {
-    // Пытаемся получить из статического кэша
-    const staticCache = await caches.open(STATIC_CACHE);
-    const staticResponse = await staticCache.match(request);
-    if (staticResponse) return staticResponse;
-
-    // Пытаемся получить из динамического кэша
-    const dynamicCache = await caches.open(DYNAMIC_CACHE);
-    const dynamicResponse = await dynamicCache.match(request);
-    if (dynamicResponse) return dynamicResponse;
-
-    // Если нет в кэше, делаем сетевой запрос
     try {
+        // Пытаемся получить из статического кэша
+        const staticCache = await caches.open(STATIC_CACHE);
+        const staticResponse = await staticCache.match(request);
+        if (staticResponse) return staticResponse;
+
+        // Пытаемся получить из динамического кэша
+        const dynamicCache = await caches.open(DYNAMIC_CACHE);
+        const dynamicResponse = await dynamicCache.match(request);
+        if (dynamicResponse) return dynamicResponse;
+
+        // Если нет в кэше, делаем сетевой запрос
         const networkResponse = await fetch(request);
         
         // Кэшируем успешные ответы (кроме видео и больших файлов)
@@ -72,12 +86,20 @@ const getFromCache = async (request) => {
         
         return networkResponse;
     } catch (error) {
+        console.log('Cache fallback error:', error);
+        
         // Fallback для страниц
-        if (request.destination === 'document' || request.mode === 'navigate') {
-            return await staticCache.match('/index.html');
+        if (request.mode === 'navigate') {
+            const staticCache = await caches.open(STATIC_CACHE);
+            const fallback = await staticCache.match('/index.html');
+            if (fallback) return fallback;
         }
         
-        throw error;
+        // Возвращаем ошибку для остальных случаев
+        return new Response('Network error happened', {
+            status: 408,
+            headers: { 'Content-Type': 'text/plain' }
+        });
     }
 };
 
@@ -89,7 +111,9 @@ self.addEventListener('install', (event) => {
         Promise.all([
             cacheStaticAssets(),
             self.skipWaiting()
-        ])
+        ]).catch(error => {
+            console.log('Install error:', error);
+        })
     );
 });
 
@@ -113,7 +137,9 @@ self.addEventListener('activate', (event) => {
                 );
             }),
             self.clients.claim()
-        ])
+        ]).catch(error => {
+            console.log('Activate error:', error);
+        })
     );
 });
 
@@ -129,9 +155,14 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Для видео и больших файлов - только сетевой запрос (НЕ КЭШИРУЕМ)
+    // Для видео и больших файлов - только сетевой запрос
     if (isVideoRequest(request) || isLargeFile(request)) {
-        event.respondWith(fetch(request));
+        event.respondWith(
+            fetch(request).catch(error => {
+                console.log('Video fetch failed:', error);
+                return new Response('Video load failed');
+            })
+        );
         return;
     }
 
@@ -154,7 +185,7 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Для статических ресурсов - Cache First стратегия
+    // Для остальных запросов - Cache First стратегия
     event.respondWith(getFromCache(request));
 });
 
@@ -177,30 +208,34 @@ const doBackgroundSync = async () => {
 self.addEventListener('push', (event) => {
     if (!event.data) return;
 
-    const data = event.data.json();
-    const options = {
-        body: data.body || 'Новое уведомление',
-        icon: '/assets/icon-192x192.png',
-        badge: '/assets/icon-192x192.png',
-        vibrate: [100, 50, 100],
-        data: {
-            url: data.url || '/'
-        },
-        actions: [
-            {
-                action: 'open',
-                title: 'Открыть'
+    try {
+        const data = event.data.json();
+        const options = {
+            body: data.body || 'Новое уведомление',
+            icon: '/assets/icon-192x192.png',
+            badge: '/assets/icon-192x192.png',
+            vibrate: [100, 50, 100],
+            data: {
+                url: data.url || '/'
             },
-            {
-                action: 'close',
-                title: 'Закрыть'
-            }
-        ]
-    };
+            actions: [
+                {
+                    action: 'open',
+                    title: 'Открыть'
+                },
+                {
+                    action: 'close',
+                    title: 'Закрыть'
+                }
+            ]
+        };
 
-    event.waitUntil(
-        self.registration.showNotification(data.title || 'Уведомление', options)
-    );
+        event.waitUntil(
+            self.registration.showNotification(data.title || 'Уведомление', options)
+        );
+    } catch (error) {
+        console.log('Push notification error:', error);
+    }
 });
 
 // Обработка кликов по уведомлениям
