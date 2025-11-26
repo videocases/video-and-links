@@ -6,6 +6,9 @@
     <meta name="description" content="Профессиональное видеопортфолио: видеооператор, режиссёр монтажа, motion design">
     <title>Видеопортфолио | Видеооператор / Режиссёр монтажа</title>
     
+    <!-- Favicon для устранения 404 ошибки -->
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACAwAAT0ICq8AAAAASUVORK5CYII=">
+    
     <!-- Schema.org structured data -->
     <script type="application/ld+json">
     {
@@ -1790,18 +1793,23 @@
                     modalVideo.src = videoUrl;
                     modalVideo.currentTime = 0;
                     
-                    // Автовоспроизведение в модальном окне
-                    const playPromise = modalVideo.play();
+                    // Улучшенная обработка загрузки видео
+                    modalVideo.addEventListener('loadeddata', function() {
+                        loadingIndicator.style.display = 'none';
+                        const playPromise = modalVideo.play();
+                        
+                        if (playPromise !== undefined) {
+                            playPromise.catch(error => {
+                                // Автовоспроизведение заблокировано - это нормально
+                                console.log('Autoplay blocked, user needs to click play');
+                            });
+                        }
+                    });
                     
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            // Видео успешно воспроизводится
-                            loadingIndicator.style.display = 'none';
-                        }).catch(error => {
-                            // Автовоспроизведение может быть заблокировано браузером
-                            loadingIndicator.style.display = 'none';
-                        });
-                    }
+                    modalVideo.addEventListener('error', function() {
+                        loadingIndicator.style.display = 'none';
+                        console.error('Video loading error');
+                    });
                     
                     // Фокусируемся на модальном окне для доступности
                     modal.focus();
@@ -1892,23 +1900,18 @@
         }
 
         // ===============================
-        // РЕГИСТРАЦИЯ SERVICE WORKER (ИСПРАВЛЕННАЯ)
+        // РЕГИСТРАЦИЯ SERVICE WORKER (УПРОЩЕННАЯ)
         // ===============================
         
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                // Добавляем версию для предотвращения кэширования
-                navigator.serviceWorker.register('./service-worker.js?v=5')
+                // Простая регистрация без версии
+                navigator.serviceWorker.register('./service-worker.js')
                     .then(function(registration) {
-                        console.log('ServiceWorker зарегистрирован успешно: ', registration.scope);
-                        
-                        // Проверяем наличие обновлений
-                        registration.addEventListener('updatefound', () => {
-                            console.log('New service worker found');
-                        });
+                        console.log('ServiceWorker зарегистрирован: ', registration.scope);
                     })
                     .catch(function(error) {
-                        console.log('Ошибка регистрации ServiceWorker: ', error);
+                        console.log('Ошибка ServiceWorker: ', error);
                     });
             });
         }
