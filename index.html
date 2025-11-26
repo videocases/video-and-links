@@ -260,12 +260,14 @@
     <meta name="twitter:image" content="https://via.placeholder.com/1200x630/000000/FFFFFF?text=Видеопортфолио">
     <meta name="twitter:creator" content="@videographer">
     
-    <!-- Performance optimizations -->
+    <!-- Performance optimizations - ИСПРАВЛЕННЫЙ БЛОК -->
     <link rel="preconnect" href="https://dl.dropboxusercontent.com" crossorigin>
-    <link rel="preconnect" href="https://www.youtube.com" crossorigin>
-    <link rel="preconnect" href="https://www.instagram.com" crossorigin>
-    <link rel="preconnect" href="https://t.me" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" as="style">
+    
+    <!-- Шрифты - правильное подключение -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#000000">
     
@@ -1917,45 +1919,17 @@
         
         window.addEventListener('online', function() {
             console.log('Приложение онлайн');
-            // Можно добавить уведомление для пользователя
         });
 
         window.addEventListener('offline', function() {
             console.log('Приложение офлайн');
-            // Можно добавить уведомление для пользователя
         });
-
-        // ===============================
-        // ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ PWA
-        // ===============================
-        
-        // Предзагрузка критических ресурсов
-        function preloadCriticalResources() {
-            const criticalResources = [
-                '/assets/icon-192x192.png',
-                '/assets/icon-512x512.png'
-            ];
-            
-            criticalResources.forEach(resource => {
-                const link = document.createElement('link');
-                link.rel = 'preload';
-                link.href = resource;
-                link.as = resource.includes('.png') ? 'image' : 'fetch';
-                document.head.appendChild(link);
-            });
-        }
 
         // ===============================
         // ИНИЦИАЛИЗАЦИЯ
         // ===============================
 
-        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
-            preloadCriticalResources();
-            
-            // Добавляем класс для улучшения производительности
-            document.body.classList.add('loaded');
-            
             // Инициализация фильтра портфолио
             const portfolioFilter = new PortfolioFilter();
             
