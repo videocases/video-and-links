@@ -1,6 +1,5 @@
-const CACHE_NAME = 'videoportfolio-v5';
-const STATIC_CACHE = 'static-v5';
-const DYNAMIC_CACHE = 'dynamic-v5';
+const CACHE_NAME = 'videoportfolio-v6';
+const STATIC_CACHE = 'static-v6';
 
 // Статические ресурсы для кэширования
 const staticAssets = [
@@ -9,6 +8,18 @@ const staticAssets = [
     '/manifest.json',
     '/assets/icon-192x192.png',
     '/assets/icon-512x512.png'
+];
+
+// Домены, которые НЕ нужно кэшировать (только сетевые запросы)
+const EXTERNAL_DOMAINS = [
+    'dl.dropboxusercontent.com',
+    'dropbox.com',
+    'youtube.com',
+    'youtu.be',
+    'instagram.com',
+    'fonts.bunny.net',
+    'fonts.googleapis.com',
+    'fonts.gstatic.com'
 ];
 
 // Функция для открытия кэша
@@ -26,81 +37,21 @@ const cacheStaticAssets = async () => {
     }
 };
 
-// Функция для кэширования динамических запросов
-const cacheDynamicData = async (request, response) => {
-    try {
-        const cache = await openCache(DYNAMIC_CACHE);
-        await cache.put(request, response.clone());
-        return response;
-    } catch (error) {
-        console.log('Cache dynamic data error:', error);
-        return response;
-    }
+// Проверка, является ли запрос внешним (не кэшируем)
+const isExternalRequest = (request) => {
+    const url = request.url.toLowerCase();
+    return EXTERNAL_DOMAINS.some(domain => url.includes(domain));
 };
 
-// Проверка, является ли запрос видео (без опциональной цепочки)
+// Проверка, является ли запрос видео
 const isVideoRequest = (request) => {
     const url = request.url.toLowerCase();
     const acceptHeader = request.headers.get('Accept');
     return url.includes('.mp4') || 
            url.includes('.webm') ||
            url.includes('.avi') ||
-           url.includes('dropboxusercontent.com') ||
            (acceptHeader && acceptHeader.includes('video')) ||
            url.includes('video');
-};
-
-// Проверка, является ли запрос большим файлом
-const isLargeFile = (request) => {
-    const url = request.url.toLowerCase();
-    return url.includes('large') || 
-           url.includes('big') ||
-           url.includes('highres') ||
-           url.includes('original') ||
-           url.includes('raw') ||
-           url.includes('uncompressed');
-};
-
-// Функция для получения из кэша с fallback
-const getFromCache = async (request) => {
-    try {
-        // Пытаемся получить из статического кэша
-        const staticCache = await caches.open(STATIC_CACHE);
-        const staticResponse = await staticCache.match(request);
-        if (staticResponse) return staticResponse;
-
-        // Пытаемся получить из динамического кэша
-        const dynamicCache = await caches.open(DYNAMIC_CACHE);
-        const dynamicResponse = await dynamicCache.match(request);
-        if (dynamicResponse) return dynamicResponse;
-
-        // Если нет в кэше, делаем сетевой запрос
-        const networkResponse = await fetch(request);
-        
-        // Кэшируем успешные ответы (кроме видео и больших файлов)
-        if (networkResponse.status === 200 && 
-            !isVideoRequest(request) && 
-            !isLargeFile(request)) {
-            await cacheDynamicData(request, networkResponse);
-        }
-        
-        return networkResponse;
-    } catch (error) {
-        console.log('Cache fallback error:', error);
-        
-        // Fallback для страниц
-        if (request.mode === 'navigate') {
-            const staticCache = await caches.open(STATIC_CACHE);
-            const fallback = await staticCache.match('/index.html');
-            if (fallback) return fallback;
-        }
-        
-        // Возвращаем ошибку для остальных случаев
-        return new Response('Network error happened', {
-            status: 408,
-            headers: { 'Content-Type': 'text/plain' }
-        });
-    }
 };
 
 // Установка Service Worker
@@ -127,9 +78,7 @@ self.addEventListener('activate', (event) => {
             caches.keys().then((cacheNames) => {
                 return Promise.all(
                     cacheNames.map((cacheName) => {
-                        if (cacheName !== STATIC_CACHE && 
-                            cacheName !== DYNAMIC_CACHE && 
-                            cacheName !== CACHE_NAME) {
+                        if (cacheName !== STATIC_CACHE && cacheName !== CACHE_NAME) {
                             console.log('Service Worker: Deleting old cache', cacheName);
                             return caches.delete(cacheName);
                         }
@@ -143,66 +92,62 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// Перехват запросов
+// Перехват запросов - УПРОЩЕННАЯ ВЕРСИЯ
 self.addEventListener('fetch', (event) => {
     const { request } = event;
-    const url = new URL(request.url);
+    const url = request.url;
 
-    // Пропускаем неподдерживаемые схемы
-    if (request.url.startsWith('chrome-extension://') ||
-        request.url.includes('extension') ||
-        !(request.url.startsWith('http'))) {
+    // 1. Пропускаем неподдерживаемые схемы и не-GET запросы
+    if (request.method !== 'GET' ||
+        url.startsWith('chrome-extension://') ||
+        url.includes('extension') ||
+        !(url.startsWith('http'))) {
         return;
     }
 
-    // Для видео и больших файлов - только сетевой запрос
-    if (isVideoRequest(request) || isLargeFile(request)) {
-        event.respondWith(
-            fetch(request).catch(error => {
-                console.log('Video fetch failed:', error);
-                return new Response('Video load failed');
+    // 2. ВСЕ внешние запросы (Dropbox, видео, шрифты) - только сеть, НЕ кэшируем
+    if (isExternalRequest(request) || isVideoRequest(request)) {
+        event.respondWith(fetch(request));
+        return;
+    }
+
+    // 3. Только для локальных статических файлов - Cache First
+    event.respondWith(
+        caches.match(request)
+            .then((cachedResponse) => {
+                // Если есть в кэше - возвращаем
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+
+                // Иначе - сетевой запрос
+                return fetch(request)
+                    .then((networkResponse) => {
+                        // Кэшируем только успешные ответы для локальных ресурсов
+                        if (networkResponse.status === 200) {
+                            const responseToCache = networkResponse.clone();
+                            caches.open(STATIC_CACHE)
+                                .then((cache) => {
+                                    cache.put(request, responseToCache);
+                                });
+                        }
+                        return networkResponse;
+                    })
+                    .catch(() => {
+                        // Fallback для страниц
+                        if (request.mode === 'navigate') {
+                            return caches.match('/index.html');
+                        }
+                        return new Response('Network error', { status: 408 });
+                    });
             })
-        );
-        return;
-    }
-
-    // Для API запросов - Network First стратегия
-    if (url.pathname.includes('/api/') || url.pathname.includes('/data/')) {
-        event.respondWith(
-            fetch(request)
-                .then((response) => {
-                    // Кэшируем успешные API ответы
-                    if (response.status === 200) {
-                        return cacheDynamicData(request, response);
-                    }
-                    return response;
-                })
-                .catch(() => {
-                    // Fallback для API
-                    return caches.match(request);
-                })
-        );
-        return;
-    }
-
-    // Для остальных запросов - Cache First стратегия
-    event.respondWith(getFromCache(request));
+    );
 });
 
 // Фоновая синхронизация
 self.addEventListener('sync', (event) => {
     console.log('Background sync:', event.tag);
-    
-    if (event.tag === 'background-sync') {
-        event.waitUntil(doBackgroundSync());
-    }
 });
-
-// Функция фоновой синхронизации
-const doBackgroundSync = async () => {
-    console.log('Doing background sync...');
-    // Здесь можно добавить логику синхронизации данных
-};
 
 // Обработка push уведомлений
 self.addEventListener('push', (event) => {
@@ -214,20 +159,9 @@ self.addEventListener('push', (event) => {
             body: data.body || 'Новое уведомление',
             icon: '/assets/icon-192x192.png',
             badge: '/assets/icon-192x192.png',
-            vibrate: [100, 50, 100],
             data: {
                 url: data.url || '/'
-            },
-            actions: [
-                {
-                    action: 'open',
-                    title: 'Открыть'
-                },
-                {
-                    action: 'close',
-                    title: 'Закрыть'
-                }
-            ]
+            }
         };
 
         event.waitUntil(
