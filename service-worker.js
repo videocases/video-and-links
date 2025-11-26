@@ -1,6 +1,6 @@
-const CACHE_NAME = 'videoportfolio-v3';
-const STATIC_CACHE = 'static-v3';
-const DYNAMIC_CACHE = 'dynamic-v3';
+const CACHE_NAME = 'videoportfolio-v4';
+const STATIC_CACHE = 'static-v4';
+const DYNAMIC_CACHE = 'dynamic-v4';
 
 // Статические ресурсы для кэширования
 const staticAssets = [
@@ -8,8 +8,7 @@ const staticAssets = [
     '/index.html',
     '/manifest.json',
     '/assets/icon-192x192.png',
-    '/assets/icon-512x512.png',
-    'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap'
+    '/assets/icon-512x512.png'
 ];
 
 // Функция для открытия кэша
@@ -30,6 +29,24 @@ const cacheDynamicData = async (request, response) => {
     return response;
 };
 
+// Проверка, является ли запрос видео
+const isVideoRequest = (request) => {
+    const url = request.url.toLowerCase();
+    return url.includes('.mp4') || 
+           url.includes('dropboxusercontent.com') ||
+           request.headers.get('Accept')?.includes('video') ||
+           url.includes('video');
+};
+
+// Проверка, является ли запрос большим файлом
+const isLargeFile = (request) => {
+    const url = request.url.toLowerCase();
+    return url.includes('large') || 
+           url.includes('big') ||
+           url.includes('highres') ||
+           url.includes('original');
+};
+
 // Функция для получения из кэша с fallback
 const getFromCache = async (request) => {
     // Пытаемся получить из статического кэша
@@ -46,37 +63,22 @@ const getFromCache = async (request) => {
     try {
         const networkResponse = await fetch(request);
         
-        // Кэшируем успешные ответы (кроме видео)
-        if (networkResponse.status === 200 && !isVideoRequest(request)) {
+        // Кэшируем успешные ответы (кроме видео и больших файлов)
+        if (networkResponse.status === 200 && 
+            !isVideoRequest(request) && 
+            !isLargeFile(request)) {
             await cacheDynamicData(request, networkResponse);
         }
         
         return networkResponse;
     } catch (error) {
         // Fallback для страниц
-        if (request.destination === 'document') {
+        if (request.destination === 'document' || request.mode === 'navigate') {
             return await staticCache.match('/index.html');
         }
         
         throw error;
     }
-};
-
-// Проверка, является ли запрос видео
-const isVideoRequest = (request) => {
-    const url = request.url;
-    return url.includes('.mp4') || 
-           url.includes('dropboxusercontent.com') ||
-           url.includes('video') ||
-           request.headers.get('Accept')?.includes('video');
-};
-
-// Проверка, является ли запрос большим файлом
-const isLargeFile = (request) => {
-    const url = request.url;
-    return url.includes('large') || 
-           url.includes('big') ||
-           url.includes('highres');
 };
 
 // Установка Service Worker
@@ -86,7 +88,7 @@ self.addEventListener('install', (event) => {
     event.waitUntil(
         Promise.all([
             cacheStaticAssets(),
-            self.skipWaiting() // Активируем сразу после установки
+            self.skipWaiting()
         ])
     );
 });
@@ -110,7 +112,7 @@ self.addEventListener('activate', (event) => {
                     })
                 );
             }),
-            self.clients.claim() // Берем контроль над всеми клиентами
+            self.clients.claim()
         ])
     );
 });
@@ -127,7 +129,7 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Для видео и больших файлов - только сетевой запрос
+    // Для видео и больших файлов - только сетевой запрос (НЕ КЭШИРУЕМ)
     if (isVideoRequest(request) || isLargeFile(request)) {
         event.respondWith(fetch(request));
         return;
@@ -165,23 +167,10 @@ self.addEventListener('sync', (event) => {
     }
 });
 
-// Периодическая фоновая синхронизация
-self.addEventListener('periodicsync', (event) => {
-    if (event.tag === 'content-update') {
-        event.waitUntil(updateContent());
-    }
-});
-
 // Функция фоновой синхронизации
 const doBackgroundSync = async () => {
     console.log('Doing background sync...');
     // Здесь можно добавить логику синхронизации данных
-};
-
-// Функция обновления контента
-const updateContent = async () => {
-    console.log('Updating content...');
-    // Здесь можно добавить логику обновления контента
 };
 
 // Обработка push уведомлений
