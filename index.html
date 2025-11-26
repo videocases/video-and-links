@@ -263,10 +263,9 @@
     <!-- Performance optimizations - ИСПРАВЛЕННЫЙ БЛОК -->
     <link rel="preconnect" href="https://dl.dropboxusercontent.com" crossorigin>
     
-    <!-- Шрифты - правильное подключение -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Шрифты - Bunny.net (100% рабочий вариант без 500 ошибок) -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600" rel="stylesheet" />
     
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#000000">
@@ -1893,19 +1892,20 @@
         }
 
         // ===============================
-        // РЕГИСТРАЦИЯ SERVICE WORKER
+        // РЕГИСТРАЦИЯ SERVICE WORKER (ИСПРАВЛЕННАЯ)
         // ===============================
         
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('./service-worker.js')
+                // Добавляем версию для предотвращения кэширования
+                navigator.serviceWorker.register('./service-worker.js?v=5')
                     .then(function(registration) {
-                        console.log('ServiceWorker зарегистрирован успешно: ', registration);
+                        console.log('ServiceWorker зарегистрирован успешно: ', registration.scope);
                         
-                        // Проверяем наличие обновлений каждые 24 часа
-                        setInterval(() => {
-                            registration.update();
-                        }, 24 * 60 * 60 * 1000);
+                        // Проверяем наличие обновлений
+                        registration.addEventListener('updatefound', () => {
+                            console.log('New service worker found');
+                        });
                     })
                     .catch(function(error) {
                         console.log('Ошибка регистрации ServiceWorker: ', error);
