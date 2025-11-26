@@ -1,5 +1,10 @@
 [build]
   publish = "."
+  command = "echo 'No build command needed'"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_VERSION = "9"
 
 [[redirects]]
   from = "/*"
@@ -14,3 +19,30 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
     Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/service-worker.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Настройки для PWA
+[context.production.environment]
+  PWA_ENABLED = "true"
+
+# Настройки для веток
+[context.deploy-preview.environment]
+  PWA_ENABLED = "false"
+
+[context.branch-deploy.environment]
+  PWA_ENABLED = "false"
