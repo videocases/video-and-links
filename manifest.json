@@ -10,7 +10,6 @@
   "scope": "./",
   "categories": ["entertainment", "photo", "social"],
   "lang": "ru-RU",
-  "dir": "ltr",
   "icons": [
     {
       "src": "./assets/icon-192x192.png",
@@ -31,34 +30,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "form_factor": "wide"
-    }
-  ],
-  "related_applications": [],
-  "prefer_related_applications": false,
-  "shortcuts": [
-    {
-      "name": "Портфолио",
-      "short_name": "Работы",
-      "description": "Посмотреть все работы",
-      "url": "/#portfolio",
-      "icons": [
-        {
-          "src": "./assets/icon-192x192.png",
-          "sizes": "192x192"
-        }
-      ]
-    },
-    {
-      "name": "Контакты",
-      "short_name": "Связь",
-      "description": "Связаться со мной",
-      "url": "/#contacts",
-      "icons": [
-        {
-          "src": "./assets/icon-192x192.png",
-          "sizes": "192x192"
-        }
-      ]
     }
   ]
 }
