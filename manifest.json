@@ -1,21 +1,27 @@
 {
-  "name": "Видеопортфолио",
-  "short_name": "Видеопортфолио", 
+  "name": "Видеопортфолио | Видеооператор / Режиссёр монтажа",
+  "short_name": "Видеопортфолио",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#ff0000",
-  "description": "Профессиональное видеопортфолио",
+  "description": "Профессиональное портфолио работ: интервью, рекламные ролики, motion design, фото",
+  "categories": ["photo", "video", "entertainment"],
+  "lang": "ru-RU",
+  "orientation": "any",
+  "scope": "/",
   "icons": [
     {
-      "src": "./assets/icon-192x192.png",
+      "src": "/assets/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "./assets/icon-512x512.png",
-      "sizes": "512x512", 
-      "type": "image/png"
+      "src": "/assets/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png", 
+      "purpose": "any maskable"
     }
   ]
 }
