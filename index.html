@@ -6,6 +6,16 @@
     <meta name="description" content="Профессиональное видеопортфолио: видеооператор, режиссёр монтажа, motion design">
     <title>Видеопортфолио | Видеооператор / Режиссёр монтажа</title>
     
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#000000">
+    
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Видеопортфолио">
+    <link rel="apple-touch-icon" href="/assets/icon-192x192.png">
+    
     <!-- Защита от блокировщиков -->
     <meta name="adguard" content="no-scan">
     <meta name="adguard" content="disable">
@@ -75,9 +85,6 @@
     <!-- Шрифты - Bunny.net (100% рабочий вариант без 500 ошибок) -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600" rel="stylesheet" />
-    
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#000000">
     
     <style>
         /* Reset and base styles */
@@ -1737,21 +1744,44 @@
         }
 
         // ===============================
-        // РЕГИСТРАЦИЯ SERVICE WORKER (УПРОЩЕННАЯ)
+        // PWA: РЕГИСТРАЦИЯ SERVICE WORKER
         // ===============================
         
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                // Простая регистрация без версии
-                navigator.serviceWorker.register('./service-worker.js')
+                navigator.serviceWorker.register('/service-worker.js')
                     .then(function(registration) {
-                        console.log('ServiceWorker зарегистрирован: ', registration.scope);
+                        console.log('✅ ServiceWorker зарегистрирован: ', registration.scope);
+                        
+                        // Проверяем обновления
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            console.log('🔄 Обнаружено обновление Service Worker');
+                            
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    console.log('📦 Новый контент доступен, обновите страницу');
+                                }
+                            });
+                        });
                     })
                     .catch(function(error) {
-                        console.log('Ошибка ServiceWorker: ', error);
+                        console.log('❌ Ошибка регистрации Service Worker: ', error);
                     });
             });
         }
+
+        // ===============================
+        // PWA: ОБРАБОТЧИК СЕТЕВЫХ ОШИБОК
+        // ===============================
+        
+        window.addEventListener('online', function() {
+            console.log('🟢 Приложение онлайн');
+        });
+
+        window.addEventListener('offline', function() {
+            console.log('🔴 Приложение офлайн');
+        });
 
         // ===============================
         // Глобальные обработчики ошибок для защиты от блокировщиков
@@ -1781,18 +1811,6 @@
         }
 
         // ===============================
-        // PWA: ОБРАБОТЧИК СЕТЕВЫХ ОШИБОК
-        // ===============================
-        
-        window.addEventListener('online', function() {
-            console.log('Приложение онлайн');
-        });
-
-        window.addEventListener('offline', function() {
-            console.log('Приложение офлайн');
-        });
-
-        // ===============================
         // ИНИЦИАЛИЗАЦИЯ
         // ===============================
 
@@ -1811,7 +1829,7 @@
                 });
             }, 3000);
             
-            console.log('Portfolio initialized successfully');
+            console.log('🎬 Видеопортфолио успешно инициализировано');
         });
     </script>
 </body>
