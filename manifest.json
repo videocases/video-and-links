@@ -4,7 +4,7 @@
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#000000",
+  "theme_color": "#ff0000",
   "description": "Профессиональное видеопортфолио: видеооператор, режиссёр монтажа, motion design",
   "orientation": "any",
   "scope": "/",
