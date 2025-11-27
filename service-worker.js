@@ -12,7 +12,7 @@ const staticAssets = [
 
 // Домены, которые НЕ нужно кэшировать (только сетевые запросы)
 const EXTERNAL_DOMAINS = [
-    'dl.dropboxusercontent.com',
+    'www.dropbox.com',
     'dropbox.com',
     'youtube.com',
     'youtu.be',
