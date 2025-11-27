@@ -1637,7 +1637,7 @@
             <div class="modal-content">
                 <button class="close-modal" aria-label="Закрыть видео">×</button>
                 <div class="modal-video-container" aria-label="Полноэкранное видео">
-                    <video class="modal-video" controls aria-label="Полноэкранное видео"></video>
+                    <video class="modal-video" controls preload="metadata" aria-label="Полноэкранное видео"></video>
                 </div>
             </div>
         </div>
@@ -1789,27 +1789,58 @@
                     modal.classList.add('active');
                     modal.setAttribute('aria-hidden', 'false');
                     
-                    // Устанавливаем источник видео
-                    modalVideo.src = videoUrl;
+                    // Сбрасываем предыдущее видео
+                    modalVideo.pause();
                     modalVideo.currentTime = 0;
                     
-                    // Улучшенная обработка загрузки видео
-                    modalVideo.addEventListener('loadeddata', function() {
+                    // Устанавливаем источник видео с параметром для обхода кэша
+                    const cacheBuster = '&t=' + new Date().getTime();
+                    modalVideo.src = videoUrl + cacheBuster;
+                    modalVideo.preload = 'metadata';
+                    
+                    // Улучшенная обработка загрузки видео для Firefox
+                    const onLoadedMetadata = function() {
                         loadingIndicator.style.display = 'none';
-                        const playPromise = modalVideo.play();
+                        console.log('Video duration:', modalVideo.duration);
                         
+                        // Попытка автовоспроизведения
+                        const playPromise = modalVideo.play();
                         if (playPromise !== undefined) {
                             playPromise.catch(error => {
                                 // Автовоспроизведение заблокировано - это нормально
                                 console.log('Autoplay blocked, user needs to click play');
                             });
                         }
-                    });
+                        
+                        // Убираем обработчики после успешной загрузки
+                        modalVideo.removeEventListener('loadedmetadata', onLoadedMetadata);
+                        modalVideo.removeEventListener('error', onError);
+                    };
                     
-                    modalVideo.addEventListener('error', function() {
+                    const onError = function() {
                         loadingIndicator.style.display = 'none';
-                        console.error('Video loading error');
-                    });
+                        console.error('Video loading error:', modalVideo.error);
+                        
+                        // Показываем сообщение об ошибке
+                        if (modalVideo.error && modalVideo.error.code === 4) {
+                            console.error('Video format not supported');
+                        }
+                        
+                        modalVideo.removeEventListener('loadedmetadata', onLoadedMetadata);
+                        modalVideo.removeEventListener('error', onError);
+                    };
+                    
+                    // Добавляем обработчики
+                    modalVideo.addEventListener('loadedmetadata', onLoadedMetadata, { once: true });
+                    modalVideo.addEventListener('error', onError, { once: true });
+                    
+                    // Таймаут на случай, если метаданные не загрузятся
+                    setTimeout(() => {
+                        if (loadingIndicator.style.display !== 'none') {
+                            loadingIndicator.style.display = 'none';
+                            console.log('Video loading timeout');
+                        }
+                    }, 10000); // 10 секунд таймаут
                     
                     // Фокусируемся на модальном окне для доступности
                     modal.focus();
