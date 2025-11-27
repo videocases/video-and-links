@@ -1,184 +1,139 @@
-const CACHE_NAME = 'videoportfolio-v6';
-const STATIC_CACHE = 'static-v6';
+// Service Worker для видеопортфолио
+const CACHE_NAME = 'videoportfolio-v3';
+const STATIC_CACHE = 'static-v3';
+const DYNAMIC_CACHE = 'dynamic-v3';
 
 // Статические ресурсы для кэширования
-const staticAssets = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/assets/icon-192x192.png',
-    '/assets/icon-512x512.png'
+const STATIC_ASSETS = [
+  '/',
+  '/index.html',
+  './manifest.json',
+  './assets/icon-192x192.png',
+  './assets/icon-512x512.png'
 ];
-
-// Домены, которые НЕ нужно кэшировать (только сетевые запросы)
-const EXTERNAL_DOMAINS = [
-    'dl.dropboxusercontent.com',
-    'dropbox.com',
-    'youtube.com',
-    'youtu.be',
-    'instagram.com',
-    'fonts.bunny.net',
-    'fonts.googleapis.com',
-    'fonts.gstatic.com'
-];
-
-// Функция для открытия кэша
-const openCache = async (cacheName) => {
-    return await caches.open(cacheName);
-};
-
-// Функция для кэширования статических ресурсов
-const cacheStaticAssets = async () => {
-    try {
-        const cache = await openCache(STATIC_CACHE);
-        return await cache.addAll(staticAssets);
-    } catch (error) {
-        console.log('Cache static assets error:', error);
-    }
-};
-
-// Проверка, является ли запрос внешним (не кэшируем)
-const isExternalRequest = (request) => {
-    const url = request.url.toLowerCase();
-    return EXTERNAL_DOMAINS.some(domain => url.includes(domain));
-};
-
-// Проверка, является ли запрос видео
-const isVideoRequest = (request) => {
-    const url = request.url.toLowerCase();
-    const acceptHeader = request.headers.get('Accept');
-    return url.includes('.mp4') || 
-           url.includes('.webm') ||
-           url.includes('.avi') ||
-           (acceptHeader && acceptHeader.includes('video')) ||
-           url.includes('video');
-};
 
 // Установка Service Worker
 self.addEventListener('install', (event) => {
-    console.log('Service Worker: Installing...');
-    
-    event.waitUntil(
-        Promise.all([
-            cacheStaticAssets(),
-            self.skipWaiting()
-        ]).catch(error => {
-            console.log('Install error:', error);
-        })
-    );
+  console.log('Service Worker: Installing...');
+  
+  event.waitUntil(
+    caches.open(STATIC_CACHE)
+      .then((cache) => {
+        console.log('Service Worker: Caching Static Assets');
+        return cache.addAll(STATIC_ASSETS);
+      })
+      .then(() => {
+        console.log('Service Worker: Installed');
+        return self.skipWaiting();
+      })
+      .catch((error) => {
+        console.error('Service Worker: Installation failed', error);
+      })
+  );
 });
 
 // Активация Service Worker
 self.addEventListener('activate', (event) => {
-    console.log('Service Worker: Activating...');
-    
-    event.waitUntil(
-        Promise.all([
-            // Очищаем старые кэши
-            caches.keys().then((cacheNames) => {
-                return Promise.all(
-                    cacheNames.map((cacheName) => {
-                        if (cacheName !== STATIC_CACHE && cacheName !== CACHE_NAME) {
-                            console.log('Service Worker: Deleting old cache', cacheName);
-                            return caches.delete(cacheName);
-                        }
-                    })
-                );
-            }),
-            self.clients.claim()
-        ]).catch(error => {
-            console.log('Activate error:', error);
+  console.log('Service Worker: Activating...');
+  
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cache) => {
+          // Удаляем старые кэши
+          if (cache !== STATIC_CACHE && cache !== DYNAMIC_CACHE && cache !== CACHE_NAME) {
+            console.log('Service Worker: Clearing Old Cache', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    }).then(() => {
+      console.log('Service Worker: Activated');
+      return self.clients.claim();
+    })
+  );
+});
+
+// Обработка запросов
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  const url = request.url;
+
+  // Пропускаем все видео и внешние домены - НЕ КЭШИРУЕМ ВИДЕО
+  if (url.includes('.mp4') || 
+      url.includes('.webm') || 
+      url.includes('.avi') ||
+      url.includes('dropboxusercontent.com') ||
+      url.includes('fonts.bunny.net') ||
+      url.includes('googleapis.com')) {
+    return event.respondWith(fetch(request));
+  }
+
+  // Для HTML-страниц: сеть сначала, потом кэш
+  if (request.headers.get('accept').includes('text/html')) {
+    event.respondWith(
+      fetch(request)
+        .then((response) => {
+          // Клонируем ответ для кэширования
+          const responseClone = response.clone();
+          caches.open(DYNAMIC_CACHE)
+            .then((cache) => {
+              cache.put(request, responseClone);
+            });
+          return response;
+        })
+        .catch(() => {
+          // Если сеть недоступна, ищем в кэше
+          return caches.match(request)
+            .then((cachedResponse) => {
+              return cachedResponse || caches.match('/index.html');
+            });
         })
     );
-});
+    return;
+  }
 
-// Перехват запросов - УПРОЩЕННАЯ ВЕРСИЯ
-self.addEventListener('fetch', (event) => {
-    const { request } = event;
-    const url = request.url;
+  // Для статических ресурсов: кэш сначала, потом сеть
+  event.respondWith(
+    caches.match(request)
+      .then((cachedResponse) => {
+        if (cachedResponse) {
+          return cachedResponse;
+        }
 
-    // 1. Пропускаем неподдерживаемые схемы и не-GET запросы
-    if (request.method !== 'GET' ||
-        url.startsWith('chrome-extension://') ||
-        url.includes('extension') ||
-        !(url.startsWith('http'))) {
-        return;
-    }
-
-    // 2. ВСЕ внешние запросы (Dropbox, видео, шрифты) - только сеть, НЕ кэшируем
-    if (isExternalRequest(request) || isVideoRequest(request)) {
-        event.respondWith(fetch(request));
-        return;
-    }
-
-    // 3. Только для локальных статических файлов - Cache First
-    event.respondWith(
-        caches.match(request)
-            .then((cachedResponse) => {
-                // Если есть в кэше - возвращаем
-                if (cachedResponse) {
-                    return cachedResponse;
-                }
-
-                // Иначе - сетевой запрос
-                return fetch(request)
-                    .then((networkResponse) => {
-                        // Кэшируем только успешные ответы для локальных ресурсов
-                        if (networkResponse.status === 200) {
-                            const responseToCache = networkResponse.clone();
-                            caches.open(STATIC_CACHE)
-                                .then((cache) => {
-                                    cache.put(request, responseToCache);
-                                });
-                        }
-                        return networkResponse;
-                    })
-                    .catch(() => {
-                        // Fallback для страниц
-                        if (request.mode === 'navigate') {
-                            return caches.match('/index.html');
-                        }
-                        return new Response('Network error', { status: 408 });
-                    });
-            })
-    );
-});
-
-// Фоновая синхронизация
-self.addEventListener('sync', (event) => {
-    console.log('Background sync:', event.tag);
-});
-
-// Обработка push уведомлений
-self.addEventListener('push', (event) => {
-    if (!event.data) return;
-
-    try {
-        const data = event.data.json();
-        const options = {
-            body: data.body || 'Новое уведомление',
-            icon: '/assets/icon-192x192.png',
-            badge: '/assets/icon-192x192.png',
-            data: {
-                url: data.url || '/'
+        return fetch(request)
+          .then((fetchResponse) => {
+            // Проверяем валидность ответа
+            if (!fetchResponse || fetchResponse.status !== 200 || fetchResponse.type !== 'basic') {
+              return fetchResponse;
             }
-        };
 
-        event.waitUntil(
-            self.registration.showNotification(data.title || 'Уведомление', options)
-        );
-    } catch (error) {
-        console.log('Push notification error:', error);
-    }
+            // Клонируем ответ для кэширования
+            const responseToCache = fetchResponse.clone();
+            caches.open(DYNAMIC_CACHE)
+              .then((cache) => {
+                cache.put(request, responseToCache);
+              });
+
+            return fetchResponse;
+          })
+          .catch((error) => {
+            console.log('Fetch failed; returning offline page', error);
+            // Для изображений возвращаем placeholder
+            if (request.destination === 'image') {
+              return caches.match('/assets/icon-192x192.png');
+            }
+          });
+      })
+  );
 });
 
-// Обработка кликов по уведомлениям
-self.addEventListener('notificationclick', (event) => {
-    event.notification.close();
+// Фоновая синхронизация (если понадобится)
+self.addEventListener('sync', (event) => {
+  console.log('Background sync:', event.tag);
+});
 
-    if (event.action === 'open') {
-        event.waitUntil(
-            clients.openWindow(event.notification.data.url)
-        );
-    }
+// Push-уведомления (если понадобится)
+self.addEventListener('push', (event) => {
+  console.log('Push notification received');
 });
