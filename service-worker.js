@@ -1,67 +1,30 @@
-// Service Worker для видеопортфолио - исправленная версия
-const CACHE_NAME = 'videoportfolio-v4';
-const STATIC_CACHE = 'static-v4';
-
-// Статические ресурсы для кэширования
-const STATIC_ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json'
-];
+// Service Worker для видеопортфолио - минимальная версия
+const CACHE_NAME = 'videoportfolio-vercel-v1';
 
 // Установка Service Worker
 self.addEventListener('install', (event) => {
-  console.log('Service Worker: Installing...');
-  
-  event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then((cache) => {
-        console.log('Service Worker: Caching Static Assets');
-        return cache.addAll(STATIC_ASSETS);
-      })
-      .then(() => {
-        console.log('Service Worker: Installed');
-        return self.skipWaiting();
-      })
-  );
+  console.log('🎬 Service Worker: Установка...');
+  self.skipWaiting();
 });
 
 // Активация Service Worker
 self.addEventListener('activate', (event) => {
-  console.log('Service Worker: Activating...');
-  
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cache) => {
-          if (cache !== STATIC_CACHE && cache !== CACHE_NAME) {
-            console.log('Service Worker: Clearing Old Cache', cache);
-            return caches.delete(cache);
-          }
-        })
-      );
-    }).then(() => {
-      console.log('Service Worker: Activated');
-      return self.clients.claim();
-    })
-  );
+  console.log('🔄 Service Worker: Активация...');
+  event.waitUntil(self.clients.claim());
 });
 
-// Обработка запросов - УПРОЩЕННАЯ ВЕРСИЯ
+// Обработка запросов
 self.addEventListener('fetch', (event) => {
   const request = event.request;
-  const url = request.url;
-
-  // НЕ КЭШИРУЕМ видео и внешние ресурсы
-  if (url.includes('.mp4') || 
-      url.includes('.webm') || 
-      url.includes('.avi') ||
-      url.includes('dropboxusercontent.com') ||
-      url.includes('fonts.bunny.net')) {
-    return event.respondWith(fetch(request));
+  const url = new URL(request.url);
+  
+  // НЕ кэшируем видео и большие медиафайлы
+  if (url.pathname.match(/\.(mp4|webm|avi|mov|mpeg)$/i) || 
+      url.hostname.includes('dropboxusercontent.com')) {
+    return;
   }
-
-  // Для HTML - сеть сначала
+  
+  // Для HTML - сеть сначала, потом кэш
   if (request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
       fetch(request)
@@ -69,15 +32,10 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
-
-  // Для остального - кэш сначала, потом сеть
+  
+  // Для остального - стандартная стратегия
   event.respondWith(
     caches.match(request)
-      .then((cachedResponse) => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        return fetch(request);
-      })
+      .then(response => response || fetch(request))
   );
 });
