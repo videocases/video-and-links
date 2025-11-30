@@ -1,41 +1,56 @@
-// Service Worker для видеопортфолио - минимальная версия
-const CACHE_NAME = 'videoportfolio-vercel-v1';
+// service-worker.js
+const CACHE_NAME = 'videoportfolio-v4';
+const ASSETS_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/assets/icon-192x192.png',
+  '/assets/icon-512x512.png'
+];
 
-// Установка Service Worker
-self.addEventListener('install', (event) => {
-  console.log('🎬 Service Worker: Установка...');
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
+  );
   self.skipWaiting();
 });
 
-// Активация Service Worker
-self.addEventListener('activate', (event) => {
-  console.log('🔄 Service Worker: Активация...');
-  event.waitUntil(self.clients.claim());
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(names => {
+      return Promise.all(
+        names.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
+      );
+    })
+  );
+  self.clients.claim();
 });
 
-// Обработка запросов
-self.addEventListener('fetch', (event) => {
-  const request = event.request;
-  const url = new URL(request.url);
-  
-  // НЕ кэшируем видео и большие медиафайлы
-  if (url.pathname.match(/\.(mp4|webm|avi|mov|mpeg)$/i) || 
-      url.hostname.includes('dropboxusercontent.com')) {
-    return;
+self.addEventListener('fetch', event => {
+  const url = new URL(event.request.url);
+
+  // Не кэшируем видео с Dropbox и Telegram
+  if (url.hostname.includes('dropbox') || 
+      url.pathname.match(/\.(mp4|webm|mov)$/i)) {
+    return fetch(event.request);
   }
-  
-  // Для HTML - сеть сначала, потом кэш
-  if (request.headers.get('accept')?.includes('text/html')) {
-    event.respondWith(
-      fetch(request)
-        .catch(() => caches.match('/index.html'))
-    );
-    return;
-  }
-  
-  // Для остального - стандартная стратегия
+
   event.respondWith(
-    caches.match(request)
-      .then(response => response || fetch(request))
+    caches.match(event.request).then(response => {
+      return response || fetch(event.request).then(networkResponse => {
+        // Кэшируем только успешные ответы
+        if (networkResponse && networkResponse.status === 200) {
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, networkResponse.clone());
+          });
+        }
+        return networkResponse;
+      });
+    }).catch(() => {
+      // Оффлайн-фолбэк
+      if (event.request.destination === 'document') {
+        return caches.match('/index.html');
+      }
+    })
   );
 });
