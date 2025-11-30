@@ -468,76 +468,78 @@
             border-left-color: white;
         }
         
-        /* Loading indicator with spinner */
-        .loading-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 0.9rem;
-            z-index: 6;
-            display: none;
-            align-items: center;
-            gap: 8px;
+        /* Content styles */
+        .portfolio-content {
+            padding: 20px;
         }
         
-        .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
+        .item-description {
+            color: #666;
+            margin-bottom: 12px;
+            line-height: 1.5;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        
-        .video-loading .loading-indicator {
-            display: flex;
-        }
-        
-        /* Error state */
-        .video-error {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            text-align: center;
-            z-index: 6;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-        }
-        
-        .retry-button {
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            cursor: pointer;
+        .item-role {
             font-weight: 500;
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+            display: block;
+        }
+        
+        .item-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .item-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--primary-color);
+            font-size: 0.95rem;
             transition: var(--transition);
         }
         
-        .retry-button:hover,
-        .retry-button:focus {
-            background: #e60000;
-            outline: 2px solid white;
-            outline-offset: 2px;
+        .item-link:hover {
+            color: var(--secondary-color);
         }
         
-        .video-error .error-icon {
-            font-size: 2rem;
-        }
-        
-        .video-error.active {
+        .item-location {
             display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        .location-icon {
+            color: var(--secondary-color);
+        }
+        
+        /* Tags */
+        .tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            background: #e9ecef;
+            color: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .tag.highlight {
+            background: rgba(255, 26, 26, 0.1);
+            color: var(--secondary-color);
         }
         
         /* Photo project styles */
@@ -625,80 +627,6 @@
             color: white;
         }
         
-        /* Content styles */
-        .portfolio-content {
-            padding: 20px;
-        }
-        
-        .item-description {
-            color: #666;
-            margin-bottom: 12px;
-            line-height: 1.5;
-        }
-        
-        .item-role {
-            font-weight: 500;
-            color: var(--secondary-color);
-            margin-bottom: 12px;
-            display: block;
-        }
-        
-        .item-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .item-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-            color: var(--primary-color);
-            font-size: 0.95rem;
-            transition: var(--transition);
-        }
-        
-        .item-link:hover {
-            color: var(--secondary-color);
-        }
-        
-        .item-location {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #888;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-        
-        .location-icon {
-            color: var(--secondary-color);
-        }
-        
-        /* Tags */
-        .tags {
-            display: flex;
-            gap: 8px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .tag {
-            background: #e9ecef;
-            color: var(--primary-color);
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        
-        .tag.highlight {
-            background: rgba(255, 26, 26, 0.1);
-            color: var(--secondary-color);
-        }
-        
         /* Modal styles */
         .modal {
             position: fixed;
@@ -753,6 +681,8 @@
             max-height: 80vh;
             object-fit: contain;
             display: block;
+            border-radius: 16px;
+            background: #000;
         }
         
         .modal-photo-container {
@@ -1728,124 +1658,62 @@
             const modalVideoContainer = document.getElementById('modal-video-container');
             let currentVideo = null;
 
-            // === УМНАЯ СИСТЕМА ЗАГРУЗКИ ВИДЕО ===
+            // === УЛЬТРА-ЧИСТЫЙ ПЛЕЕР: мгновенный старт + нативный спиннер браузера ===
             document.querySelectorAll('.video-poster-container').forEach(container => {
                 const playBtn = container.querySelector('.play-button');
                 
                 container.addEventListener('click', function(e) {
-                    // Останавливаем всплытие, чтобы не срабатывали другие обработчики
                     e.preventDefault();
                     e.stopPropagation();
                     
                     const videoId = container.dataset.videoId;
-                    const videoUrl = videoSources[videoId];
-                    const telegramUrl = telegramLinks[videoId] || '#';
+                    const baseUrl = videoSources[videoId].split('?')[0];
+                    const params = new URLSearchParams(videoSources[videoId].split('?')[1] || '');
+                    params.set('raw', '1');
+                    const url = `${baseUrl}?${params.toString()}`;
+                    const tgLink = telegramLinks[videoId] || '#';
+                    const posterUrl = container.querySelector('.video-poster').src;
 
-                    // Очищаем предыдущее видео
+                    // Очистка предыдущего видео
                     if (currentVideo) {
                         currentVideo.pause();
                         currentVideo.removeAttribute('src');
                         currentVideo.load();
-                        currentVideo.remove();
-                        currentVideo = null;
                     }
 
-                    // Показываем красивый спиннер загрузки
-                    modalVideoContainer.innerHTML = `
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh; color: white; gap: 20px;">
-                            <div style="width: 50px; height: 50px; border: 4px solid #333; border-top: 4px solid #ff1a1a; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                            <p style="font-size: 1.1rem;">Загрузка видео...</p>
-                        </div>
-                        <style>
-                            @keyframes spin {
-                                from { transform: rotate(0deg); }
-                                to { transform: rotate(360deg); }
-                            }
-                        </style>
-                    `;
-
-                    // Показываем модальное окно
-                    modal.classList.add('active');
-                    modal.setAttribute('aria-hidden', 'false');
-
-                    // Создаём элемент видео
+                    // Сразу создаём и вставляем видео — без кастомного спиннера!
                     const video = document.createElement('video');
-                    video.src = videoUrl;
+                    video.src = url;
+                    video.poster = posterUrl; // Добавляем постер для плавного старта
                     video.controls = true;
                     video.autoplay = true;
                     video.playsInline = true;
+                    video.preload = 'metadata';
                     video.className = 'modal-video';
-                    video.preload = 'auto';
 
-                    let hasPlayed = false;
-                    let errorOccurred = false;
-
-                    // Функция показа фолбэка в Telegram
-                    const showTelegramFallback = () => {
-                        // Показываем фолбэк только если действительно произошла ошибка
-                        // или видео не начало воспроизводиться
-                        if (errorOccurred || !hasPlayed) {
-                            modalVideoContainer.innerHTML = `
-                                <div style="text-align: center; padding: 40px 20px; color: white;">
-                                    <p style="font-size: 1.3rem; margin-bottom: 20px; opacity: 0.9;">
-                                        Видео не загрузилось
-                                    </p>
-                                    <p style="margin-bottom: 30px; opacity: 0.8; line-height: 1.5;">
-                                        Возможно, проблема с интернетом или сервером.<br>
-                                        Но вы всё равно можете посмотреть ролик в Telegram
-                                    </p>
-                                    <div style="display: flex; flex-direction: column; gap: 18px; align-items: center;">
-                                        <a href="${telegramUrl}" target="_blank" style="
-                                            background: #28a745; color: white; padding: 16px 32px; border-radius: 50px; 
-                                            text-decoration: none; font-weight: 600; font-size: 1.2rem; display: inline-flex; 
-                                            align-items: center; gap: 12px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);">
-                                            Открыть в Telegram
-                                        </a>
-                                        <button onclick="location.reload()" style="
-                                            background: #ffc107; color: #212529; padding: 14px 28px; border: none; 
-                                            border-radius: 50px; font-weight: 600; cursor: pointer; font-size: 1.1rem;">
-                                            Попробовать снова
-                                        </button>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    };
-
-                    // Событие успешной загрузки и начала воспроизведения
-                    video.addEventListener('canplay', () => {
-                        hasPlayed = true;
-                        // Заменяем спиннер на видео
-                        modalVideoContainer.innerHTML = '';
-                        modalVideoContainer.appendChild(video);
-                    }, { once: true });
-
-                    // Обработка ошибок загрузки
-                    video.addEventListener('error', () => {
-                        errorOccurred = true;
-                        showTelegramFallback();
-                    });
-
-                    // Обработка отмены загрузки
-                    video.addEventListener('abort', () => {
-                        errorOccurred = true;
-                        showTelegramFallback();
-                    });
-
-                    // Запасной таймаут на 60 секунд (только для крайних случаев)
-                    const fallbackTimeout = setTimeout(() => {
-                        if (!hasPlayed && !errorOccurred) {
-                            errorOccurred = true;
-                            showTelegramFallback();
-                        }
-                    }, 60000);
-
-                    // Очистка таймаута при успешной загрузке
-                    video.addEventListener('canplay', () => {
-                        clearTimeout(fallbackTimeout);
-                    });
+                    modalVideoContainer.innerHTML = '';           // чистим контейнер
+                    modalVideoContainer.appendChild(video);       // сразу показываем плеер
+                    modal.classList.add('active');
 
                     currentVideo = video;
+
+                    // Только при реальной ошибке (404, CORS, сеть упала) — Telegram
+                    video.addEventListener('error', () => {
+                        modalVideoContainer.innerHTML = `
+                            <div style="text-align:center;padding:50px 20px;color:white;">
+                                <p style="font-size:1.4rem;margin-bottom:20px;">Видео временно недоступно</p>
+                                <p style="margin-bottom:30px;opacity:0.9;line-height:1.6;">
+                                    Но вы можете посмотреть его в Telegram — качество там отличное
+                                </p>
+                                <a href="${tgLink}" target="_blank" style="
+                                    background:#28a745;color:white;padding:16px 36px;border-radius:50px;
+                                    text-decoration:none;font-weight:600;font-size:1.2rem;display:inline-flex;
+                                    align-items:center;gap:12px;box-shadow:0 4px 20px rgba(40,167,69,0.4);">
+                                    Открыть в Telegram
+                                </a>
+                            </div>
+                        `;
+                    });
                 });
             });
 
