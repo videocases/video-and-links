@@ -929,34 +929,6 @@
         .skip-link:focus {
             top: 6px;
         }
-        
-        /* Video loading indicator */
-        .video-loading-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            z-index: 20;
-            display: none;
-        }
-        
-        .video-loading-indicator.active {
-            display: block;
-        }
-        
-        .video-loading-indicator::after {
-            content: '';
-            display: block;
-            width: 40px;
-            height: 40px;
-            margin: 10px;
-            border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.3);
-            border-top-color: var(--secondary-color);
-            animation: spin 1s linear infinite;
-        }
     </style>
 </head>
 <body>
@@ -1642,7 +1614,6 @@
             <button class="close-modal" aria-label="Закрыть видео">×</button>
             <div class="modal-video-container">
                 <video class="modal-video" controls autoplay playsinline preload="auto" webkit-playsinline x-webkit-airplay="allow"></video>
-                <div class="video-loading-indicator"></div>
             </div>
         </div>
     </div>
@@ -1746,7 +1717,6 @@
         const photoModal = document.getElementById('photo-modal');
         const modalVideo = videoModal.querySelector('video');
         const modalPhoto = photoModal.querySelector('.modal-photo');
-        const loadingIndicator = videoModal.querySelector('.video-loading-indicator');
 
         // === МГНОВЕННЫЙ ЗАПУСК ВИДЕО С АНИМАЦИЕЙ ===
         document.querySelectorAll('.video-poster-container').forEach(container => {
@@ -1755,61 +1725,32 @@
                 const v = videos[id];
                 if (!v) return;
 
-                // 1. Показать индикатор загрузки
-                loadingIndicator.classList.add('active');
-                
-                // 2. Очистка предыдущего видео
+                // 1. Очистка предыдущего видео
                 modalVideo.pause();
                 modalVideo.removeAttribute('src');
                 modalVideo.load();
 
-                // 3. МГНОВЕННО показываем модалку + постер
+                // 2. МГНОВЕННО показываем модалку + постер
                 modalVideo.poster = v.poster;
                 videoModal.classList.add('active');
 
-                // 4. Установка источника с небольшой задержкой для плавности
+                // 3. Установка источника с небольшой задержкой для плавности
                 requestAnimationFrame(() => {
                     modalVideo.src = v.src;
                 });
 
-                // 5. Финальная магия для Safari
-                const tryPlay = () => {
-                    // Убрать индикатор загрузки
-                    loadingIndicator.classList.remove('active');
-                    
-                    // Проверяем готовность видео
-                    if (modalVideo.readyState >= 2 && modalVideo.paused) {
-                        // Магия для Safari (если duration NaN/Infinity)
-                        if (isNaN(modalVideo.duration) || !isFinite(modalVideo.duration)) {
-                            modalVideo.currentTime = 0.01;
-                        }
-                        
-                        // Попытка воспроизведения
-                        const playPromise = modalVideo.play();
-                        if (playPromise !== undefined) {
-                            playPromise.catch(() => {
-                                // Если авто-плей запрещен, просто показываем кнопку play
-                                console.log('Автовоспроизведение отключено, показываем контролы');
-                            });
-                        }
-                    }
+                const playIt = () => {
+                    modalVideo.play().catch(() => {});
+                    modalVideo.removeEventListener('loadedmetadata', playIt);
                 };
+                modalVideo.addEventListener('loadedmetadata', playIt);
 
-                // Пробуем воспроизвести при загрузке метаданных
-                modalVideo.addEventListener('loadedmetadata', tryPlay, { once: true });
-                
-                // Дублирующая проверка на loadeddata для Safari
                 modalVideo.addEventListener('loadeddata', () => {
-                    if (modalVideo.readyState >= 2 && modalVideo.paused) {
-                        tryPlay();
+                    if (modalVideo.readyState >= 2) {
+                        modalVideo.currentTime = 0.01;
+                        modalVideo.play().catch(() => {});
                     }
                 }, { once: true });
-
-                // Обработка ошибок загрузки
-                modalVideo.addEventListener('error', () => {
-                    loadingIndicator.classList.remove('active');
-                    showVideoError(v.tg);
-                });
 
                 // Фокус для доступности
                 setTimeout(() => modalVideo.focus(), 100);
@@ -1875,7 +1816,6 @@
                     modalVideo.removeAttribute('src');
                     modalVideo.load();
                     modalVideo.poster = '';
-                    loadingIndicator.classList.remove('active');
                 });
             }
         });
@@ -1923,7 +1863,7 @@
         // PWA: Регистрация Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').catch(err => {
+                navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(err => {
                     console.log('ServiceWorker регистрация не удалась: ', err);
                 });
             });
