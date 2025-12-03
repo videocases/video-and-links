@@ -929,6 +929,34 @@
         .skip-link:focus {
             top: 6px;
         }
+        
+        /* Video loading indicator */
+        .video-loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            z-index: 20;
+            display: none;
+        }
+        
+        .video-loading-indicator.active {
+            display: block;
+        }
+        
+        .video-loading-indicator::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 10px;
+            border-radius: 50%;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top-color: var(--secondary-color);
+            animation: spin 1s linear infinite;
+        }
     </style>
 </head>
 <body>
@@ -1040,7 +1068,7 @@
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CVfdZgpKM-v/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 a3 3 0 0 0 3 3 a3 3 0 0 0 3-3 a3 3 0 0 0-3-3z"/>
                                 </svg>
                                 Instagram
                             </a>
@@ -1075,7 +1103,7 @@
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CRtOlQzB2Cq/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 a3 3 0 0 0 3 3 a3 3 0 0 0 3-3 a3 3 0 0 0-3-3z"/>
                                 </svg>
                                 Instagram
                             </a>
@@ -1110,7 +1138,7 @@
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CPKwBiqh7T3/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 a3 3 0 0 0 3 3 a3 3 0 0 0 3-3 a3 3 0 0 0-3-3z"/>
                                 </svg>
                                 Instagram
                             </a>
@@ -1145,7 +1173,7 @@
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CPVDzVsh4SQ/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 a5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 a5 5 0 0 1-5-5 a5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 a3 3 0 0 0 3 3 a3 3 0 0 0 3-3 a3 3 0 0 0-3-3z"/>
                                 </svg>
                                 Instagram
                             </a>
@@ -1179,7 +1207,7 @@
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CVCjP2JIlkr/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 a3 3 0 0 0 3 3 a3 3 0 0 0 3-3 a3 3 0 0 0-3-3z"/>
                                 </svg>
                                 Instagram
                             </a>
@@ -1613,7 +1641,8 @@
         <div class="modal-content">
             <button class="close-modal" aria-label="Закрыть видео">×</button>
             <div class="modal-video-container">
-                <video class="modal-video" controls autoplay playsinline preload="metadata"></video>
+                <video class="modal-video" controls autoplay playsinline preload="auto" webkit-playsinline x-webkit-airplay="allow"></video>
+                <div class="video-loading-indicator"></div>
             </div>
         </div>
     </div>
@@ -1629,7 +1658,7 @@
     </div>
 
     <script>
-        // Все видео (добавь все 18 штук)
+        // Видео данные с твоими &raw=1 ссылками
         const videos = {
             '1': { 
                 src: 'https://dl.dropboxusercontent.com/scl/fi/9m3cukz126cwyw54j33c4/1.mp4?rlkey=ezurlz7dkw731p0b59l1lyvgg&st=o76qmbum&raw=1', 
@@ -1713,126 +1742,155 @@
             }
         };
 
-        // Элементы модальных окон
         const videoModal = document.getElementById('video-modal');
         const photoModal = document.getElementById('photo-modal');
         const modalVideo = videoModal.querySelector('video');
         const modalPhoto = photoModal.querySelector('.modal-photo');
+        const loadingIndicator = videoModal.querySelector('.video-loading-indicator');
 
-        // === ФУНКЦИИ ===
-        
-        // Открытие видео — мгновенный запуск
+        // === МГНОВЕННЫЙ ЗАПУСК ВИДЕО С АНИМАЦИЕЙ ===
         document.querySelectorAll('.video-poster-container').forEach(container => {
-            container.addEventListener('click', function(e) {
-                e.stopPropagation();
+            container.addEventListener('click', () => {
+                const id = container.dataset.videoId;
+                const v = videos[id];
+                if (!v) return;
+
+                // 1. Показать индикатор загрузки
+                loadingIndicator.classList.add('active');
                 
-                const videoId = container.dataset.videoId;
-                const videoData = videos[videoId];
-                
-                if (!videoData) return;
-                
-                // Сбрасываем предыдущее видео
+                // 2. Очистка предыдущего видео
                 modalVideo.pause();
                 modalVideo.removeAttribute('src');
                 modalVideo.load();
-                
-                // Устанавливаем новое видео
-                modalVideo.poster = videoData.poster;
-                modalVideo.src = videoData.src;
+
+                // 3. МГНОВЕННО показываем модалку + постер
+                modalVideo.poster = v.poster;
                 videoModal.classList.add('active');
-                videoModal.setAttribute('aria-hidden', 'false');
+
+                // 4. Установка источника с небольшой задержкой для плавности
+                requestAnimationFrame(() => {
+                    modalVideo.src = v.src;
+                });
+
+                // 5. Финальная магия для Safari
+                const tryPlay = () => {
+                    // Убрать индикатор загрузки
+                    loadingIndicator.classList.remove('active');
+                    
+                    // Проверяем готовность видео
+                    if (modalVideo.readyState >= 2 && modalVideo.paused) {
+                        // Магия для Safari (если duration NaN/Infinity)
+                        if (isNaN(modalVideo.duration) || !isFinite(modalVideo.duration)) {
+                            modalVideo.currentTime = 0.01;
+                        }
+                        
+                        // Попытка воспроизведения
+                        const playPromise = modalVideo.play();
+                        if (playPromise !== undefined) {
+                            playPromise.catch(() => {
+                                // Если авто-плей запрещен, просто показываем кнопку play
+                                console.log('Автовоспроизведение отключено, показываем контролы');
+                            });
+                        }
+                    }
+                };
+
+                // Пробуем воспроизвести при загрузке метаданных
+                modalVideo.addEventListener('loadedmetadata', tryPlay, { once: true });
                 
-                // Фокус на плеере для доступности
+                // Дублирующая проверка на loadeddata для Safari
+                modalVideo.addEventListener('loadeddata', () => {
+                    if (modalVideo.readyState >= 2 && modalVideo.paused) {
+                        tryPlay();
+                    }
+                }, { once: true });
+
+                // Обработка ошибок загрузки
+                modalVideo.addEventListener('error', () => {
+                    loadingIndicator.classList.remove('active');
+                    showVideoError(v.tg);
+                });
+
+                // Фокус для доступности
                 setTimeout(() => modalVideo.focus(), 100);
             });
         });
 
-        // 100% ЗАЩИТА ОТ ЗАЛИПАНИЯ DROPBOX
-        function closeVideoModal() {
-            videoModal.classList.remove('active');
-            videoModal.setAttribute('aria-hidden', 'true');
-            modalVideo.pause();
-            modalVideo.removeAttribute('src');   // Критически важно
-            modalVideo.load();                   // Рвём соединение с Dropbox
-            modalVideo.poster = '';
-            
-            // Удаляем фолбэк-сообщение, если оно было
-            const errorMessage = videoModal.querySelector('.video-error-message');
-            if (errorMessage) {
-                errorMessage.remove();
-            }
-        }
-
-        // Закрытие фото-модалки
-        function closePhotoModal() {
-            photoModal.classList.remove('active');
-            modalPhoto.src = '';
-        }
-
-        // === ОБРАБОТЧИКИ СОБЫТИЙ ===
-        
-        // Закрытие модалок по клику на фон или кнопку
-        videoModal.addEventListener('click', (e) => {
-            if (e.target === videoModal || e.target.classList.contains('close-modal')) {
-                closeVideoModal();
-            }
-        });
-
-        photoModal.addEventListener('click', (e) => {
-            if (e.target === photoModal || e.target.classList.contains('close-modal')) {
-                closePhotoModal();
-            }
-        });
-
-        // Закрытие по Escape
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                if (videoModal.classList.contains('active')) closeVideoModal();
-                if (photoModal.classList.contains('active')) closePhotoModal();
-            }
-        });
-
-        // Фолбэк в Telegram только при реальной ошибке
-        modalVideo.addEventListener('error', () => {
-            const currentSrc = modalVideo.src;
-            const videoId = Object.keys(videos).find(id => videos[id].src === currentSrc);
-            const tgLink = videos[videoId]?.tg || '#';
-            
-            // Создаём сообщение об ошибке
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'video-error-message';
-            errorDiv.style.cssText = `
-                text-align: center;
-                padding: 60px;
-                color: #fff;
-                background: rgba(0,0,0,0.9);
-                border-radius: 16px;
-                max-width: 500px;
-                margin: 20px;
-            `;
-            
-            errorDiv.innerHTML = `
-                <p style="font-size: 1.5rem; margin-bottom: 20px;">Видео временно недоступно</p>
-                <a href="${tgLink}" target="_blank" 
-                   style="background: #28a745; color: #fff; padding: 16px 40px; 
-                          border-radius: 50px; text-decoration: none; font-weight: 600; display: inline-block;">
-                    Открыть в Telegram (полное качество)
-                </a>
-                <p style="margin-top: 20px; color: #aaa; font-size: 0.9rem;">
-                    Или попробуйте обновить страницу
-                </p>
-            `;
-            
-            // Вставляем сообщение
+        // === ФУНКЦИЯ ПОКАЗА ОШИБКИ ===
+        function showVideoError(telegramLink) {
             const container = videoModal.querySelector('.modal-video-container');
-            container.innerHTML = '';
-            container.appendChild(errorDiv);
+            container.innerHTML = `
+                <div style="padding: 60px 20px; text-align: center; color: #fff; max-width: 500px; margin: 0 auto;">
+                    <div style="font-size: 3rem; margin-bottom: 20px;">⚠️</div>
+                    <h3 style="font-size: 1.4rem; margin-bottom: 15px; font-weight: 600;">Видео временно недоступно</h3>
+                    <p style="color: #aaa; margin-bottom: 30px; line-height: 1.5;">
+                        Возможно, проблема с загрузкой или сервером Dropbox.
+                        Попробуйте позже или откройте видео в Telegram.
+                    </p>
+                    <a href="${telegramLink}" target="_blank" style="
+                        background: #0088cc; 
+                        color: white; 
+                        padding: 14px 32px; 
+                        border-radius: 50px; 
+                        text-decoration: none; 
+                        font-weight: 600; 
+                        font-size: 1.1rem;
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 10px;
+                        transition: all 0.3s;
+                    ">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.192l-1.87 8.825c-.134.625-.5.78-1.016.486l-2.812-2.07-1.355 1.307c-.15.15-.276.276-.564.276l.2-2.853 5.2-4.702c.216-.192-.047-.298-.332-.107l-6.437 4.06-2.77-.86c-.604-.188-.617-.604.128-.89l10.857-4.17c.502-.18.944.128.78.89z"/>
+                        </svg>
+                        Открыть в Telegram
+                    </a>
+                    <button onclick="location.reload()" style="
+                        margin-top: 20px;
+                        background: transparent;
+                        color: #fff;
+                        border: 1px solid rgba(255,255,255,0.3);
+                        padding: 10px 20px;
+                        border-radius: 25px;
+                        cursor: pointer;
+                        font-size: 0.9rem;
+                        transition: all 0.3s;
+                    ">
+                        Обновить страницу
+                    </button>
+                </div>
+            `;
+        }
+
+        // === ЗАКРЫТИЕ МОДАЛОК ===
+        function closeModal(modal, cleanup) {
+            modal.classList.remove('active');
+            if (cleanup) cleanup();
+        }
+
+        videoModal.addEventListener('click', e => {
+            if (e.target === videoModal || e.target.classList.contains('close-modal')) {
+                closeModal(videoModal, () => {
+                    modalVideo.pause();
+                    modalVideo.removeAttribute('src');
+                    modalVideo.load();
+                    modalVideo.poster = '';
+                    loadingIndicator.classList.remove('active');
+                });
+            }
         });
 
-        // Длительность всегда корректна
-        modalVideo.addEventListener('loadedmetadata', () => {
-            // Браузер теперь точно знает длительность — отображает правильно
-            console.log('Длительность видео:', modalVideo.duration, 'сек');
+        photoModal.addEventListener('click', e => {
+            if (e.target === photoModal || e.target.classList.contains('close-modal')) {
+                closeModal(photoModal, () => modalPhoto.src = '');
+            }
+        });
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') {
+                if (videoModal.classList.contains('active')) closeModal(videoModal, () => {});
+                if (photoModal.classList.contains('active')) closeModal(photoModal);
+            }
         });
 
         // === ФОТО-МОДАЛКА ===
@@ -1851,34 +1909,23 @@
                 document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
                 tag.classList.add('active');
                 const filter = tag.dataset.filter;
-                
                 document.querySelectorAll('.portfolio-item').forEach(item => {
-                    if (filter === 'all' || item.dataset.tags.includes(filter)) {
-                        item.style.display = 'block';
-                    } else {
-                        item.style.display = 'none';
-                    }
+                    item.style.display = (filter === 'all' || item.dataset.tags.includes(filter)) ? 'block' : 'none';
                 });
             });
         });
 
-        // Убираем пульсацию кнопок через 3 секунды
+        // Убираем пульсацию кнопок Play через 3 секунды
         setTimeout(() => {
-            document.querySelectorAll('.play-button').forEach(btn => {
-                btn.classList.remove('pulse');
-            });
+            document.querySelectorAll('.play-button').forEach(b => b.classList.remove('pulse'));
         }, 3000);
 
-        // Регистрация Service Worker для PWA
+        // PWA: Регистрация Service Worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(function(registration) {
-                        console.log('Service Worker зарегистрирован успешно:', registration.scope);
-                    })
-                    .catch(function(error) {
-                        console.log('Ошибка регистрации Service Worker:', error);
-                    });
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(err => {
+                    console.log('ServiceWorker регистрация не удалась: ', err);
+                });
             });
         }
     </script>
