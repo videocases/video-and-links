@@ -6,7 +6,7 @@
     <meta name="description" content="Профессиональное видеопортфолио: видеооператор, режиссёр монтажа, motion design">
     <title>Видеопортфолио | Видеооператор / Режиссёр монтажа</title>
     
-    <!-- PWA: Манифест и регистрация Service Worker -->
+    <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#ff1a1a">
     
@@ -15,12 +15,17 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Видеопортфолио">
     
+    <!-- Modern PWA tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Видеопортфолио">
+    
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACAwAAT0ICq8AAAAASUVORK5CYII=">
     
     <!-- Preload critical resources -->
     <link rel="preload" href="https://fonts.bunny.net/css?family=inter:300,400,500,600" as="style">
     <link rel="preconnect" href="https://dl.dropboxusercontent.com">
+    <link rel="dns-prefetch" href="https://fonts.bunny.net">
     
     <!-- Schema.org structured data -->
     <script type="application/ld+json">
@@ -307,6 +312,8 @@
             color: var(--text-color);
             background-color: var(--light-gray);
             padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
         
         .container {
@@ -369,6 +376,7 @@
             transition: var(--transition);
             font-size: 0.9rem;
             color: var(--text-color);
+            user-select: none;
         }
         
         .filter-tag:hover {
@@ -397,6 +405,13 @@
             box-shadow: var(--box-shadow);
             transition: var(--transition);
             position: relative;
+            opacity: 1;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .portfolio-item:hover {
@@ -423,10 +438,12 @@
             height: 100%;
             object-fit: cover;
             transition: var(--transition);
+            background: linear-gradient(45deg, #000, #222);
         }
         
         .video-poster-container:hover .video-poster {
             transform: scale(1.03);
+            opacity: 0.9;
         }
         
         .play-button {
@@ -436,7 +453,7 @@
             transform: translate(-50%, -50%);
             width: 70px;
             height: 70px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -446,6 +463,7 @@
             z-index: 10;
             transition: var(--transition);
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
         }
         
         .play-button:hover,
@@ -465,6 +483,7 @@
             border-bottom: 10px solid transparent;
             border-left: 18px solid var(--primary-color);
             margin-left: 2px;
+            transition: var(--transition);
         }
         
         .play-button:hover::after {
@@ -480,6 +499,7 @@
             color: #666;
             margin-bottom: 12px;
             line-height: 1.5;
+            min-height: 60px;
         }
         
         .item-role {
@@ -487,6 +507,7 @@
             color: var(--secondary-color);
             margin-bottom: 12px;
             display: block;
+            min-height: 24px;
         }
         
         .item-links {
@@ -504,10 +525,13 @@
             color: var(--primary-color);
             font-size: 0.95rem;
             transition: var(--transition);
+            padding: 4px 8px;
+            border-radius: 4px;
         }
         
         .item-link:hover {
             color: var(--secondary-color);
+            background: rgba(255, 26, 26, 0.05);
         }
         
         .item-location {
@@ -517,6 +541,7 @@
             color: #888;
             font-size: 0.9rem;
             margin-top: 10px;
+            flex-wrap: wrap;
         }
         
         .location-icon {
@@ -538,6 +563,7 @@
             border-radius: 15px;
             font-size: 0.85rem;
             font-weight: 500;
+            user-select: none;
         }
         
         .tag.highlight {
@@ -566,6 +592,7 @@
             cursor: pointer;
             transition: var(--transition);
             z-index: 1;
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
         }
         
         .photo-item:hover {
@@ -608,6 +635,7 @@
             transition: var(--transition);
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             backdrop-filter: blur(4px);
+            border: none;
         }
         
         .photo-play-button:hover,
@@ -630,7 +658,7 @@
             color: white;
         }
         
-        /* Modal styles */
+        /* Modal styles - FIXED ACCESSIBILITY */
         .modal {
             position: fixed;
             top: 0;
@@ -701,6 +729,7 @@
             max-height: 80vh;
             object-fit: contain;
             display: block;
+            border-radius: 16px;
         }
         
         .close-modal {
@@ -797,6 +826,28 @@
         .copyright {
             margin-top: 10px;
             color: #888;
+        }
+        
+        /* Loading state */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
         }
         
         /* Responsive design */
@@ -914,6 +965,24 @@
         .skip-link:focus {
             top: 6px;
         }
+        
+        /* Video loading spinner */
+        .video-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -946,7 +1015,12 @@
                 <!-- Project 1 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-poster-container" data-video-id="1" aria-label="Видео: Интервью с участниками выставки и лекция">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/1xy557h3u18wsa36o6nuj/Poster1.jpg?rlkey=s8racbym820556d4fw0wk3wcd&st=u0vj7c7j&raw=1" alt="Интервью с участниками выставки и лекция" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/1xy557h3u18wsa36o6nuj/Poster1.jpg?rlkey=s8racbym820556d4fw0wk3wcd&st=u0vj7c7j&raw=1" 
+                             alt="Интервью с участниками выставки и лекция" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Интервью с участниками выставки и лекция"></button>
                     </div>
                     <div class="portfolio-content">
@@ -981,7 +1055,12 @@
                 <!-- Project 2 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-poster-container" data-video-id="2" aria-label="Видео: Визажист выбирает, тестирует косметику">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/nke1mzrjf3uwtbz9cygmf/Poster2.jpg?rlkey=shbrhn0q3cuznmpahjaiv28z2&st=8jffh8ku&raw=1" alt="Визажист выбирает, тестирует косметику" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/nke1mzrjf3uwtbz9cygmf/Poster2.jpg?rlkey=shbrhn0q3cuznmpahjaiv28z2&st=8jffh8ku&raw=1" 
+                             alt="Визажист выбирает, тестирует косметику" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Визажист выбирает, тестирует косметику"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1016,7 +1095,12 @@
                 <!-- Project 3 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-poster-container" data-video-id="3" aria-label="Видео: Участники викторины получают призы">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/d44zfv6wq1tfv4sut3how/Poster3.jpg?rlkey=vjtc5to2ovbd8mxz7elxwh618&st=w7giqist&raw=1" alt="Участники викторины получают призы" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/d44zfv6wq1tfv4sut3how/Poster3.jpg?rlkey=vjtc5to2ovbd8mxz7elxwh618&st=w7giqist&raw=1" 
+                             alt="Участники викторины получают призы" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Участники викторины получают призы"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1051,7 +1135,12 @@
                 <!-- Project 4 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-poster-container" data-video-id="4" aria-label="Видео: Поздравление от коллег">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/309k21er19wg19c7ivtfs/Poster4.jpg?rlkey=40q3869z1hioag1o9hgdjycqq&st=mm7wg3rz&raw=1" alt="Поздравление от коллег" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/309k21er19wg19c7ivtfs/Poster4.jpg?rlkey=40q3869z1hioag1o9hgdjycqq&st=mm7wg3rz&raw=1" 
+                             alt="Поздравление от коллег" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Поздравление от коллег"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1086,7 +1175,12 @@
                 <!-- Project 5 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-poster-container" data-video-id="5" aria-label="Видео: Различные антистресс-игрушки">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/hdadkxuv8mug8m5hadw4p/Poster5.jpg?rlkey=8bc5hrdqxmnbp6qs1t56p6t84&st=bgf2lof9&raw=1" alt="Различные антистресс-игрушки" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/hdadkxuv8mug8m5hadw4p/Poster5.jpg?rlkey=8bc5hrdqxmnbp6qs1t56p6t84&st=bgf2lof9&raw=1" 
+                             alt="Различные антистресс-игрушки" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Различные антистресс-игрушки"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1121,7 +1215,12 @@
                 <!-- Project 6 -->
                 <div class="portfolio-item" data-tags="motion design">
                     <div class="video-poster-container" data-video-id="6" aria-label="Видео: Советы по продажам">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/yobz3e4smhh6v5knhwajc/Poster6-Motion-design.jpg?rlkey=n4wt17t840gfh0ui3xk0wvayh&st=4tnl1bw0&raw=1" alt="Советы по продажам" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/yobz3e4smhh6v5knhwajc/Poster6-Motion-design.jpg?rlkey=n4wt17t840gfh0ui3xk0wvayh&st=4tnl1bw0&raw=1" 
+                             alt="Советы по продажам" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Советы по продажам"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1155,7 +1254,12 @@
                 <!-- Project 7 -->
                 <div class="portfolio-item" data-tags="motion design">
                     <div class="video-poster-container" data-video-id="7" aria-label="Видео: Баннер-поздравление">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/8nhzonnlj5ecrqtayvrnc/Poster7-Motion-design.jpg?rlkey=m740wxa9ybbzem9zz0ikw8egw&st=hvudgiss&raw=1" alt="Баннер-поздравление" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/8nhzonnlj5ecrqtayvrnc/Poster7-Motion-design.jpg?rlkey=m740wxa9ybbzem9zz0ikw8egw&st=hvudgiss&raw=1" 
+                             alt="Баннер-поздравление" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Баннер-поздравление"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1189,7 +1293,12 @@
                 <!-- Project 8 - Photo Project -->
                 <div class="portfolio-item" data-tags="фотосъемка ретушь">
                     <div class="photo-container" aria-label="Фото: Товары для школы">
-                        <img class="photo-item" data-photo-id="8" src="https://dl.dropboxusercontent.com/scl/fi/fbdsc3qhb7i2yf7mcse92/8.jpg?rlkey=35693jid9yd4ztoyhmvl3zhkv&st=ep0w74ib&raw=1" alt="Товары для школы - фотография" width="800" height="450" loading="lazy">
+                        <img class="photo-item" data-photo-id="8" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/fbdsc3qhb7i2yf7mcse92/8.jpg?rlkey=35693jid9yd4ztoyhmvl3zhkv&st=ep0w74ib&raw=1" 
+                             alt="Товары для школы - фотография" 
+                             width="800" 
+                             height="450" 
+                             loading="lazy">
                         <div class="photo-overlay">
                             <button class="photo-play-button" aria-label="Посмотреть фото в полном размере: Товары для школы"></button>
                         </div>
@@ -1200,7 +1309,7 @@
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CSeO-ZyqD_9/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/>
+                                    <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 a3 3 0 0 0 3 3 a3 3 0 0 0 3-3 a3 3 0 0 0-3-3z"/>
                                 </svg>
                                 Instagram
                             </a>
@@ -1226,7 +1335,12 @@
                 <!-- Project 9 - Photo Project -->
                 <div class="portfolio-item" data-tags="фотосъемка ретушь">
                     <div class="photo-container" aria-label="Фото: Новогоднее оформление">
-                        <img class="photo-item" data-photo-id="9" src="https://dl.dropboxusercontent.com/scl/fi/bfxw3marvj38fori4j7d3/9.jpg?rlkey=gac2aawlmokoao1hm7fptysjk&st=314allj1&raw=1" alt="Новогоднее оформление - фотография" width="800" height="450" loading="lazy">
+                        <img class="photo-item" data-photo-id="9" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/bfxw3marvj38fori4j7d3/9.jpg?rlkey=gac2aawlmokoao1hm7fptysjk&st=314allj1&raw=1" 
+                             alt="Новогоднее оформление - фотография" 
+                             width="800" 
+                             height="450" 
+                             loading="lazy">
                         <div class="photo-overlay">
                             <button class="photo-play-button" aria-label="Посмотреть фото в полном размере: Новогоднее оформление"></button>
                         </div>
@@ -1263,7 +1377,12 @@
                 <!-- Project 10 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-poster-container" data-video-id="10" aria-label="Видео: Технологии сервиса доставки готовой еды">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/2rymxzmnab4q8l9uxddsr/Poster10.jpg?rlkey=34hsg4jpxkfovgjxjn4bfzwst&st=05ie9sxs&raw=1" alt="Технологии сервиса доставки готовой еды" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/2rymxzmnab4q8l9uxddsr/Poster10.jpg?rlkey=34hsg4jpxkfovgjxjn4bfzwst&st=05ie9sxs&raw=1" 
+                             alt="Технологии сервиса доставки готовой еды" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Технологии сервиса доставки готовой еды"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1298,7 +1417,12 @@
                 <!-- Project 11 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-poster-container" data-video-id="11" aria-label="Видео: Приготовления к приему гостей в доме">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/kx34g9lxy1iemhydi3eze/Poster11.jpg?rlkey=fkvk7a7i0nwf7quzdukvoe89u&st=kfjjufag&raw=1" alt="Приготовления к приему гостей в доме" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/kx34g9lxy1iemhydi3eze/Poster11.jpg?rlkey=fkvk7a7i0nwf7quzdukvoe89u&st=kfjjufag&raw=1" 
+                             alt="Приготовления к приему гостей в доме" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Приготовления к приему гостей в доме"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1332,7 +1456,12 @@
                 <!-- Project 12 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-poster-container" data-video-id="12" aria-label="Видео: Строительство центра обработки данных">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/m6x4tkwlfq9qna824e2f0/Poster12.jpg?rlkey=iulyzjnrn9gqw8o4hwnd5h68h&st=vw55eauf&raw=1" alt="Строительство центра обработки данных" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/m6x4tkwlfq9qna824e2f0/Poster12.jpg?rlkey=iulyzjnrn9gqw8o4hwnd5h68h&st=vw55eauf&raw=1" 
+                             alt="Строительство центра обработки данных" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Строительство центра обработки данных"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1366,7 +1495,12 @@
                 <!-- Project 13 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-poster-container" data-video-id="13" aria-label="Видео: Нарезка из видео, которое отснял (исходники)">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/3ejyhm4klk6dstwg7drt5/Poster13.jpg?rlkey=gotyycse4vka45tc3y036ntmx&st=6n8rec75&raw=1" alt="Нарезка из видео, которое отснял (исходники)" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/3ejyhm4klk6dstwg7drt5/Poster13.jpg?rlkey=gotyycse4vka45tc3y036ntmx&st=6n8rec75&raw=1" 
+                             alt="Нарезка из видео, которое отснял (исходники)" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Нарезка из видео, которое отснял (исходники)"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1400,7 +1534,12 @@
                 <!-- Project 14 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-poster-container" data-video-id="14" aria-label="Видео: Экологичное мышление в бизнесе">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/nkucp7q7bqkfico9cem5e/Poster14.jpg?rlkey=ill0fq8iqt512nwysbr74wi6t&st=derdvjat&raw=1" alt="Экологичное мышление в бизнесе" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/nkucp7q7bqkfico9cem5e/Poster14.jpg?rlkey=ill0fq8iqt512nwysbr74wi6t&st=derdvjat&raw=1" 
+                             alt="Экологичное мышление в бизнесе" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Экологичное мышление в бизнесе"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1435,7 +1574,12 @@
                 <!-- Project 15 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-poster-container" data-video-id="15" aria-label="Видео: Акция по безопасности дорожного движения">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/baxee7rbdxqhqpljx7p0i/Poster15.jpg?rlkey=jn8zzvpkxwfjdp4s2uzgt5uqe&st=qrsu0t9c&raw=1" alt="Акция по безопасности дорожного движения" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/baxee7rbdxqhqpljx7p0i/Poster15.jpg?rlkey=jn8zzvpkxwfjdp4s2uzgt5uqe&st=qrsu0t9c&raw=1" 
+                             alt="Акция по безопасности дорожного движения" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Акция по безопасности дорожного движения"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1469,7 +1613,12 @@
                 <!-- Project 16 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-poster-container" data-video-id="16" aria-label="Видео: Путь от инженера до стилиста">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/s1gbdhq9awkq43pq1pfxq/Poster16.jpg?rlkey=05vj1brz6h4vbo3us5qt309qd&st=8siirf3t&raw=1" alt="Путь от инженера до стилиста" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/s1gbdhq9awkq43pq1pfxq/Poster16.jpg?rlkey=05vj1brz6h4vbo3us5qt309qd&st=8siirf3t&raw=1" 
+                             alt="Путь от инженера до стилиста" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Путь от инженера до стилиста"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1503,7 +1652,12 @@
                 <!-- Project 17 -->
                 <div class="portfolio-item" data-tags="видеооператор режиссер монтажа">
                     <div class="video-poster-container" data-video-id="17" aria-label="Видео: Производство детских каш и молочных смесей">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/e06o82ksidv6id8411hhd/Poster17.jpg?rlkey=t6jnns29ld74hz9x9hl8euavf&st=3b7aqpoz&raw=1" alt="Производство детских каш и молочных смесей" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/e06o82ksidv6id8411hhd/Poster17.jpg?rlkey=t6jnns29ld74hz9x9hl8euavf&st=3b7aqpoz&raw=1" 
+                             alt="Производство детских каш и молочных смесей" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Производство детских каш и молочных смесей"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1538,7 +1692,12 @@
                 <!-- Project 18 -->
                 <div class="portfolio-item" data-tags="видеооператор">
                     <div class="video-poster-container" data-video-id="18" aria-label="Видео: Прямая трансляция музыкального фестиваля">
-                        <img class="video-poster" src="https://dl.dropboxusercontent.com/scl/fi/or6z3ms1kf056ncz4dk18/Poster18.jpg?rlkey=kekf50scnv80tlk57kwacsabk&st=7m2ui0ni&raw=1" alt="Прямая трансляция музыкального фестиваля" loading="lazy">
+                        <img class="video-poster" 
+                             src="https://dl.dropboxusercontent.com/scl/fi/or6z3ms1kf056ncz4dk18/Poster18.jpg?rlkey=kekf50scnv80tlk57kwacsabk&st=7m2ui0ni&raw=1" 
+                             alt="Прямая трансляция музыкального фестиваля" 
+                             loading="lazy"
+                             width="800"
+                             height="450">
                         <button class="play-button pulse" aria-label="Воспроизвести видео: Прямая трансляция музыкального фестиваля"></button>
                     </div>
                     <div class="portfolio-content">
@@ -1594,17 +1753,24 @@
     </div>
 
     <!-- Video Modal -->
-    <div id="video-modal" class="modal" aria-hidden="true" aria-modal="true" role="dialog" aria-label="Видеоплеер">
+    <div id="video-modal" class="modal" role="dialog" aria-label="Видеоплеер">
         <div class="modal-content">
             <button class="close-modal" aria-label="Закрыть видео">×</button>
             <div class="modal-video-container">
-                <video class="modal-video" controls autoplay playsinline preload="auto" webkit-playsinline x-webkit-airplay="allow"></video>
+                <video class="modal-video" 
+                       controls 
+                       autoplay 
+                       playsinline 
+                       preload="auto" 
+                       webkit-playsinline 
+                       x-webkit-airplay="allow"
+                       aria-label="Видео плеер"></video>
             </div>
         </div>
     </div>
 
     <!-- Photo Modal -->
-    <div id="photo-modal" class="modal" aria-hidden="true" aria-modal="true" role="dialog" aria-label="Просмотр фото">
+    <div id="photo-modal" class="modal" role="dialog" aria-label="Просмотр фото">
         <div class="modal-content">
             <button class="close-modal" aria-label="Закрыть фото">×</button>
             <div class="modal-photo-container">
@@ -1614,245 +1780,301 @@
     </div>
 
     <script>
-        // Видео данные с твоими &raw=1 ссылками
-        const videos = {
-            '1': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/9m3cukz126cwyw54j33c4/1.mp4?rlkey=ezurlz7dkw731p0b59l1lyvgg&st=o76qmbum&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/1xy557h3u18wsa36o6nuj/Poster1.jpg?rlkey=s8racbym820556d4fw0wk3wcd&st=u0vj7c7j&raw=1', 
-                tg: 'https://t.me/Video_and_Links/159' 
-            },
-            '2': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/4anhgb10y1ewv1p35fbum/2.mp4?rlkey=zc7hf46q1dpk4gal4j3y1md3m&st=6qw06kav&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/nke1mzrjf3uwtbz9cygmf/Poster2.jpg?rlkey=shbrhn0q3cuznmpahjaiv28z2&st=8jffh8ku&raw=1', 
-                tg: 'https://t.me/Video_and_Links/158' 
-            },
-            '3': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/zuc0gvuqdgb3zfwm6vp1o/3.mp4?rlkey=ib3ifeao5c8ofs2lgle2trspd&st=ai0ik0gp&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/d44zfv6wq1tfv4sut3how/Poster3.jpg?rlkey=vjtc5to2ovbd8mxz7elxwh618&st=w7giqist&raw=1', 
-                tg: 'https://t.me/Video_and_Links/157' 
-            },
-            '4': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/1xulp4kzombsi24jxri6m/4.mp4?rlkey=zqeq4g9hg67j2qnjhny8tomgq&st=fqynxck1&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/309k21er19wg19c7ivtfs/Poster4.jpg?rlkey=40q3869z1hioag1o9hgdjycqq&st=mm7wg3rz&raw=1', 
-                tg: 'https://t.me/Video_and_Links/156' 
-            },
-            '5': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/r31gk727eexclc2yfmehv/5.mp4?rlkey=ccej3b7sn4efkxcco3zk28bn3&st=g22nlzms&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/hdadkxuv8mug8m5hadw4p/Poster5.jpg?rlkey=8bc5hrdqxmnbp6qs1t56p6t84&st=bgf2lof9&raw=1', 
-                tg: 'https://t.me/Video_and_Links/155' 
-            },
-            '6': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/tpt4fx3t24hzwwzz2qwdq/6-Motion-design.mp4?rlkey=iw72cnaeo96z633kje6i0lwb3&st=7qe4l0jo&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/yobz3e4smhh6v5knhwajc/Poster6-Motion-design.jpg?rlkey=n4wt17t840gfh0ui3xk0wvayh&st=4tnl1bw0&raw=1', 
-                tg: 'https://t.me/Video_and_Links/154' 
-            },
-            '7': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/szy3nta1h049oe88bxw8d/7-Motion-design.mp4?rlkey=2xopp6pmi7nwaxx3w27ue58vi&st=d0fz90vu&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/8nhzonnlj5ecrqtayvrnc/Poster7-Motion-design.jpg?rlkey=m740wxa9ybbzem9zz0ikw8egw&st=hvudgiss&raw=1', 
-                tg: 'https://t.me/Video_and_Links/153' 
-            },
-            '10': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/66qkhaywj6ksyqquby655/10.mp4?rlkey=s24d4ftr10ky8zwatqtxwkjwh&st=q52ali83&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/2rymxzmnab4q8l9uxddsr/Poster10.jpg?rlkey=34hsg4jpxkfovgjxjn4bfzwst&st=05ie9sxs&raw=1', 
-                tg: 'https://t.me/Video_and_Links/150' 
-            },
-            '11': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/lsrmhd0251dyryzgc5lvh/11.mp4?rlkey=ucpkyf9oo79ywpy8ivbd3gorj&st=10buwlaa&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/kx34g9lxy1iemhydi3eze/Poster11.jpg?rlkey=fkvk7a7i0nwf7quzdukvoe89u&st=kfjjufag&raw=1', 
-                tg: 'https://t.me/Video_and_Links/149' 
-            },
-            '12': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/6dysdqzx2cd31gfjkp215/12.mp4?rlkey=1c5fmgf9uklnmk43c9qfohc9l&st=w5f3f719&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/m6x4tkwlfq9qna824e2f0/Poster12.jpg?rlkey=iulyzjnrn9gqw8o4hwnd5h68h&st=vw55eauf&raw=1', 
-                tg: 'https://t.me/Video_and_Links/148' 
-            },
-            '13': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/v1lehltpml7195gxig91r/13.mp4?rlkey=ym2kov8jqd0l3lnzv6rk85hyj&st=hwf4c0y0&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/3ejyhm4klk6dstwg7drt5/Poster13.jpg?rlkey=gotyycse4vka45tc3y036ntmx&st=6n8rec75&raw=1', 
-                tg: 'https://t.me/Video_and_Links/147' 
-            },
-            '14': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/xwi1hmng4pwpdg536j0xx/14.mp4?rlkey=h1piezqllo849qg1iakh42p5n&st=qbgjtrxx&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/nkucp7q7bqkfico9cem5e/Poster14.jpg?rlkey=ill0fq8iqt512nwysbr74wi6t&st=derdvjat&raw=1', 
-                tg: 'https://t.me/Video_and_Links/146' 
-            },
-            '15': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/abpb1p4uf9yft4uv25sus/15.mp4?rlkey=ztfkt0w5fh512edfa39rljj3m&st=qfcbqvu1&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/baxee7rbdxqhqpljx7p0i/Poster15.jpg?rlkey=jn8zzvpkxwfjdp4s2uzgt5uqe&st=qrsu0t9c&raw=1', 
-                tg: 'https://t.me/Video_and_Links/145' 
-            },
-            '16': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/pkys0il19gcfbsglpu10r/16.mp4?rlkey=dgm85zoatu1dixvr6quv1f4if&st=m9opr16o&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/s1gbdhq9awkq43pq1pfxq/Poster16.jpg?rlkey=05vj1brz6h4vbo3us5qt309qd&st=8siirf3t&raw=1', 
-                tg: 'https://t.me/Video_and_Links/144' 
-            },
-            '17': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/18y1jh6rmlzhirfff28hi/17.mp4?rlkey=ee9bwy7tqfq4x4g1q3zjben3w&st=qy14lc6w&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/e06o82ksidv6id8411hhd/Poster17.jpg?rlkey=t6jnns29ld74hz9x9hl8euavf&st=3b7aqpoz&raw=1', 
-                tg: 'https://t.me/Video_and_Links/143' 
-            },
-            '18': { 
-                src: 'https://dl.dropboxusercontent.com/scl/fi/6e74fr6ut708gtz8kmhlo/18.mp4?rlkey=9j333pzvhogcpwnm3tc9xe1fg&st=u7qijkjh&raw=1', 
-                poster: 'https://dl.dropboxusercontent.com/scl/fi/or6z3ms1kf056ncz4dk18/Poster18.jpg?rlkey=kekf50scnv80tlk57kwacsabk&st=7m2ui0ni&raw=1', 
-                tg: 'https://t.me/Video_and_Links/142' 
-            }
-        };
+        // Оптимизированная инициализация
+        document.addEventListener('DOMContentLoaded', () => {
+            // Видео данные
+            const videos = {
+                '1': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/9m3cukz126cwyw54j33c4/1.mp4?rlkey=ezurlz7dkw731p0b59l1lyvgg&st=o76qmbum&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/1xy557h3u18wsa36o6nuj/Poster1.jpg?rlkey=s8racbym820556d4fw0wk3wcd&st=u0vj7c7j&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/159' 
+                },
+                '2': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/4anhgb10y1ewv1p35fbum/2.mp4?rlkey=zc7hf46q1dpk4gal4j3y1md3m&st=6qw06kav&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/nke1mzrjf3uwtbz9cygmf/Poster2.jpg?rlkey=shbrhn0q3cuznmpahjaiv28z2&st=8jffh8ku&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/158' 
+                },
+                '3': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/zuc0gvuqdgb3zfwm6vp1o/3.mp4?rlkey=ib3ifeao5c8ofs2lgle2trspd&st=ai0ik0gp&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/d44zfv6wq1tfv4sut3how/Poster3.jpg?rlkey=vjtc5to2ovbd8mxz7elxwh618&st=w7giqist&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/157' 
+                },
+                '4': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/1xulp4kzombsi24jxri6m/4.mp4?rlkey=zqeq4g9hg67j2qnjhny8tomgq&st=fqynxck1&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/309k21er19wg19c7ivtfs/Poster4.jpg?rlkey=40q3869z1hioag1o9hgdjycqq&st=mm7wg3rz&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/156' 
+                },
+                '5': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/r31gk727eexclc2yfmehv/5.mp4?rlkey=ccej3b7sn4efkxcco3zk28bn3&st=g22nlzms&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/hdadkxuv8mug8m5hadw4p/Poster5.jpg?rlkey=8bc5hrdqxmnbp6qs1t56p6t84&st=bgf2lof9&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/155' 
+                },
+                '6': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/tpt4fx3t24hzwwzz2qwdq/6-Motion-design.mp4?rlkey=iw72cnaeo96z633kje6i0lwb3&st=7qe4l0jo&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/yobz3e4smhh6v5knhwajc/Poster6-Motion-design.jpg?rlkey=n4wt17t840gfh0ui3xk0wvayh&st=4tnl1bw0&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/154' 
+                },
+                '7': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/szy3nta1h049oe88bxw8d/7-Motion-design.mp4?rlkey=2xopp6pmi7nwaxx3w27ue58vi&st=d0fz90vu&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/8nhzonnlj5ecrqtayvrnc/Poster7-Motion-design.jpg?rlkey=m740wxa9ybbzem9zz0ikw8egw&st=hvudgiss&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/153' 
+                },
+                '10': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/66qkhaywj6ksyqquby655/10.mp4?rlkey=s24d4ftr10ky8zwatqtxwkjwh&st=q52ali83&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/2rymxzmnab4q8l9uxddsr/Poster10.jpg?rlkey=34hsg4jpxkfovgjxjn4bfzwst&st=05ie9sxs&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/150' 
+                },
+                '11': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/lsrmhd0251dyryzgc5lvh/11.mp4?rlkey=ucpkyf9oo79ywpy8ivbd3gorj&st=10buwlaa&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/kx34g9lxy1iemhydi3eze/Poster11.jpg?rlkey=fkvk7a7i0nwf7quzdukvoe89u&st=kfjjufag&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/149' 
+                },
+                '12': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/6dysdqzx2cd31gfjkp215/12.mp4?rlkey=1c5fmgf9uklnmk43c9qfohc9l&st=w5f3f719&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/m6x4tkwlfq9qna824e2f0/Poster12.jpg?rlkey=iulyzjnrn9gqw8o4hwnd5h68h&st=vw55eauf&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/148' 
+                },
+                '13': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/v1lehltpml7195gxig91r/13.mp4?rlkey=ym2kov8jqd0l3lnzv6rk85hyj&st=hwf4c0y0&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/3ejyhm4klk6dstwg7drt5/Poster13.jpg?rlkey=gotyycse4vka45tc3y036ntmx&st=6n8rec75&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/147' 
+                },
+                '14': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/xwi1hmng4pwpdg536j0xx/14.mp4?rlkey=h1piezqllo849qg1iakh42p5n&st=qbgjtrxx&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/nkucp7q7bqkfico9cem5e/Poster14.jpg?rlkey=ill0fq8iqt512nwysbr74wi6t&st=derdvjat&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/146' 
+                },
+                '15': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/abpb1p4uf9yft4uv25sus/15.mp4?rlkey=ztfkt0w5fh512edfa39rljj3m&st=qfcbqvu1&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/baxee7rbdxqhqpljx7p0i/Poster15.jpg?rlkey=jn8zzvpkxwfjdp4s2uzgt5uqe&st=qrsu0t9c&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/145' 
+                },
+                '16': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/pkys0il19gcfbsglpu10r/16.mp4?rlkey=dgm85zoatu1dixvr6quv1f4if&st=m9opr16o&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/s1gbdhq9awkq43pq1pfxq/Poster16.jpg?rlkey=05vj1brz6h4vbo3us5qt309qd&st=8siirf3t&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/144' 
+                },
+                '17': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/18y1jh6rmlzhirfff28hi/17.mp4?rlkey=ee9bwy7tqfq4x4g1q3zjben3w&st=qy14lc6w&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/e06o82ksidv6id8411hhd/Poster17.jpg?rlkey=t6jnns29ld74hz9x9hl8euavf&st=3b7aqpoz&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/143' 
+                },
+                '18': { 
+                    src: 'https://dl.dropboxusercontent.com/scl/fi/6e74fr6ut708gtz8kmhlo/18.mp4?rlkey=9j333pzvhogcpwnm3tc9xe1fg&st=u7qijkjh&raw=1', 
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/or6z3ms1kf056ncz4dk18/Poster18.jpg?rlkey=kekf50scnv80tlk57kwacsabk&st=7m2ui0ni&raw=1', 
+                    tg: 'https://t.me/Video_and_Links/142' 
+                }
+            };
 
-        const videoModal = document.getElementById('video-modal');
-        const photoModal = document.getElementById('photo-modal');
-        const modalVideo = videoModal.querySelector('video');
-        const modalPhoto = photoModal.querySelector('.modal-photo');
+            const videoModal = document.getElementById('video-modal');
+            const photoModal = document.getElementById('photo-modal');
+            const modalVideo = videoModal.querySelector('video');
+            const modalPhoto = photoModal.querySelector('.modal-photo');
+            let currentVideoId = null;
 
-        // === МГНОВЕННЫЙ ЗАПУСК ВИДЕО С АНИМАЦИЕЙ ===
-        document.querySelectorAll('.video-poster-container').forEach(container => {
-            container.addEventListener('click', () => {
-                const id = container.dataset.videoId;
-                const v = videos[id];
-                if (!v) return;
+            // === ОПТИМИЗИРОВАННЫЙ ЗАПУСК ВИДЕО ===
+            document.querySelectorAll('.video-poster-container').forEach(container => {
+                container.addEventListener('click', () => {
+                    const id = container.dataset.videoId;
+                    const v = videos[id];
+                    if (!v) return;
 
-                // 1. Очистка предыдущего видео
-                modalVideo.pause();
-                modalVideo.removeAttribute('src');
-                modalVideo.load();
-
-                // 2. МГНОВЕННО показываем модалку + постер
-                modalVideo.poster = v.poster;
-                videoModal.classList.add('active');
-
-                // 3. Установка источника с небольшой задержкой для плавности
-                requestAnimationFrame(() => {
-                    modalVideo.src = v.src;
-                });
-
-                const playIt = () => {
-                    modalVideo.play().catch(() => {});
-                    modalVideo.removeEventListener('loadedmetadata', playIt);
-                };
-                modalVideo.addEventListener('loadedmetadata', playIt);
-
-                modalVideo.addEventListener('loadeddata', () => {
-                    if (modalVideo.readyState >= 2) {
-                        modalVideo.currentTime = 0.01;
-                        modalVideo.play().catch(() => {});
-                    }
-                }, { once: true });
-
-                // Фокус для доступности
-                setTimeout(() => modalVideo.focus(), 100);
-            });
-        });
-
-        // === ФУНКЦИЯ ПОКАЗА ОШИБКИ ===
-        function showVideoError(telegramLink) {
-            const container = videoModal.querySelector('.modal-video-container');
-            container.innerHTML = `
-                <div style="padding: 60px 20px; text-align: center; color: #fff; max-width: 500px; margin: 0 auto;">
-                    <div style="font-size: 3rem; margin-bottom: 20px;">⚠️</div>
-                    <h3 style="font-size: 1.4rem; margin-bottom: 15px; font-weight: 600;">Видео временно недоступно</h3>
-                    <p style="color: #aaa; margin-bottom: 30px; line-height: 1.5;">
-                        Возможно, проблема с загрузкой или сервером Dropbox.
-                        Попробуйте позже или откройте видео в Telegram.
-                    </p>
-                    <a href="${telegramLink}" target="_blank" style="
-                        background: #0088cc; 
-                        color: white; 
-                        padding: 14px 32px; 
-                        border-radius: 50px; 
-                        text-decoration: none; 
-                        font-weight: 600; 
-                        font-size: 1.1rem;
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 10px;
-                        transition: all 0.3s;
-                    ">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.192l-1.87 8.825c-.134.625-.5.78-1.016.486l-2.812-2.07-1.355 1.307c-.15.15-.276.276-.564.276l.2-2.853 5.2-4.702c.216-.192-.047-.298-.332-.107l-6.437 4.06-2.77-.86c-.604-.188-.617-.604.128-.89l10.857-4.17c.502-.18.944.128.78.89z"/>
-                        </svg>
-                        Открыть в Telegram
-                    </a>
-                    <button onclick="location.reload()" style="
-                        margin-top: 20px;
-                        background: transparent;
-                        color: #fff;
-                        border: 1px solid rgba(255,255,255,0.3);
-                        padding: 10px 20px;
-                        border-radius: 25px;
-                        cursor: pointer;
-                        font-size: 0.9rem;
-                        transition: all 0.3s;
-                    ">
-                        Обновить страницу
-                    </button>
-                </div>
-            `;
-        }
-
-        // === ЗАКРЫТИЕ МОДАЛОК ===
-        function closeModal(modal, cleanup) {
-            modal.classList.remove('active');
-            if (cleanup) cleanup();
-        }
-
-        videoModal.addEventListener('click', e => {
-            if (e.target === videoModal || e.target.classList.contains('close-modal')) {
-                closeModal(videoModal, () => {
+                    currentVideoId = id;
+                    
+                    // Очистка предыдущего видео
                     modalVideo.pause();
-                    modalVideo.removeAttribute('src');
+                    modalVideo.src = '';
                     modalVideo.load();
-                    modalVideo.poster = '';
-                });
-            }
-        });
-
-        photoModal.addEventListener('click', e => {
-            if (e.target === photoModal || e.target.classList.contains('close-modal')) {
-                closeModal(photoModal, () => modalPhoto.src = '');
-            }
-        });
-
-        document.addEventListener('keydown', e => {
-            if (e.key === 'Escape') {
-                if (videoModal.classList.contains('active')) closeModal(videoModal, () => {});
-                if (photoModal.classList.contains('active')) closeModal(photoModal);
-            }
-        });
-
-        // === ФОТО-МОДАЛКА ===
-        document.querySelectorAll('.photo-play-button').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const img = btn.closest('.photo-container').querySelector('.photo-item');
-                modalPhoto.src = img.src;
-                photoModal.classList.add('active');
-            });
-        });
-
-        // === ФИЛЬТРЫ ===
-        document.querySelectorAll('.filter-tag').forEach(tag => {
-            tag.addEventListener('click', () => {
-                document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
-                tag.classList.add('active');
-                const filter = tag.dataset.filter;
-                document.querySelectorAll('.portfolio-item').forEach(item => {
-                    item.style.display = (filter === 'all' || item.dataset.tags.includes(filter)) ? 'block' : 'none';
+                    
+                    // Показываем модалку мгновенно
+                    videoModal.classList.add('active');
+                    modalVideo.poster = v.poster;
+                    
+                    // Предварительная загрузка видео (без блокировки интерфейса)
+                    setTimeout(() => {
+                        modalVideo.src = v.src;
+                        modalVideo.load();
+                        
+                        modalVideo.onloadeddata = () => {
+                            modalVideo.play().catch(e => {
+                                console.log('Автовоспроизведение заблокировано:', e);
+                            });
+                        };
+                        
+                        // Обработка ошибок загрузки
+                        modalVideo.onerror = () => {
+                            showVideoError(v.tg);
+                        };
+                    }, 100);
                 });
             });
-        });
 
-        // Убираем пульсацию кнопок Play через 3 секунды
-        setTimeout(() => {
-            document.querySelectorAll('.play-button').forEach(b => b.classList.remove('pulse'));
-        }, 3000);
+            // === ФУНКЦИЯ ПОКАЗА ОШИБКИ ===
+            function showVideoError(telegramLink) {
+                const container = videoModal.querySelector('.modal-video-container');
+                container.innerHTML = `
+                    <div style="padding: 60px 20px; text-align: center; color: #fff; max-width: 500px; margin: 0 auto;">
+                        <div style="font-size: 3rem; margin-bottom: 20px;">⚠️</div>
+                        <h3 style="font-size: 1.4rem; margin-bottom: 15px; font-weight: 600;">Видео временно недоступно</h3>
+                        <p style="color: #aaa; margin-bottom: 30px; line-height: 1.5;">
+                            Возможно, проблема с загрузкой или сервером Dropbox.
+                            Попробуйте позже или откройте видео в Telegram.
+                        </p>
+                        <a href="${telegramLink}" target="_blank" style="
+                            background: #0088cc; 
+                            color: white; 
+                            padding: 14px 32px; 
+                            border-radius: 50px; 
+                            text-decoration: none; 
+                            font-weight: 600; 
+                            font-size: 1.1rem;
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 10px;
+                            transition: all 0.3s;
+                        ">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.192l-1.87 8.825c-.134.625-.5.78-1.016.486l-2.812-2.07-1.355 1.307c-.15.15-.276.276-.564.276l.2-2.853 5.2-4.702c.216-.192-.047-.298-.332-.107l-6.437 4.06-2.77-.86c-.604-.188-.617-.604.128-.89l10.857-4.17c.502-.18.944.128.78.89z"/>
+                            </svg>
+                            Открыть в Telegram
+                        </a>
+                        <button onclick="location.reload()" style="
+                            margin-top: 20px;
+                            background: transparent;
+                            color: #fff;
+                            border: 1px solid rgba(255,255,255,0.3);
+                            padding: 10px 20px;
+                            border-radius: 25px;
+                            cursor: pointer;
+                            font-size: 0.9rem;
+                            transition: all 0.3s;
+                        ">
+                            Обновить страницу
+                        </button>
+                    </div>
+                `;
+            }
 
-        // PWA: Регистрация Service Worker
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(err => {
-                    console.log('ServiceWorker регистрация не удалась: ', err);
+            // === ЗАКРЫТИЕ МОДАЛОК ===
+            function closeVideoModal() {
+                videoModal.classList.remove('active');
+                modalVideo.pause();
+                modalVideo.src = '';
+                modalVideo.load();
+                modalVideo.poster = '';
+                
+                // Восстанавливаем контейнер видео
+                const container = videoModal.querySelector('.modal-video-container');
+                if (container.innerHTML.includes('Видео временно недоступно')) {
+                    container.innerHTML = '<video class="modal-video" controls autoplay playsinline preload="auto" webkit-playsinline x-webkit-airplay="allow" aria-label="Видео плеер"></video>';
+                }
+            }
+
+            function closePhotoModal() {
+                photoModal.classList.remove('active');
+                modalPhoto.src = '';
+            }
+
+            videoModal.addEventListener('click', e => {
+                if (e.target === videoModal || e.target.classList.contains('close-modal')) {
+                    closeVideoModal();
+                }
+            });
+
+            photoModal.addEventListener('click', e => {
+                if (e.target === photoModal || e.target.classList.contains('close-modal')) {
+                    closePhotoModal();
+                }
+            });
+
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') {
+                    if (videoModal.classList.contains('active')) closeVideoModal();
+                    if (photoModal.classList.contains('active')) closePhotoModal();
+                }
+            });
+
+            // === ФОТО-МОДАЛКА ===
+            document.querySelectorAll('.photo-play-button').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const img = btn.closest('.photo-container').querySelector('.photo-item');
+                    modalPhoto.src = img.src;
+                    photoModal.classList.add('active');
                 });
             });
-        }
+
+            // === ФИЛЬТРЫ ===
+            document.querySelectorAll('.filter-tag').forEach(tag => {
+                tag.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+                    tag.classList.add('active');
+                    const filter = tag.dataset.filter;
+                    
+                    document.querySelectorAll('.portfolio-item').forEach(item => {
+                        if (filter === 'all' || item.dataset.tags.includes(filter)) {
+                            item.style.display = 'block';
+                            item.style.animation = 'fadeIn 0.5s ease';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Убираем пульсацию кнопок Play через 3 секунды
+            setTimeout(() => {
+                document.querySelectorAll('.play-button').forEach(b => b.classList.remove('pulse'));
+            }, 3000);
+
+            // PWA: Регистрация Service Worker с улучшенной обработкой
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    // Ждем немного для лучшей производительности
+                    setTimeout(() => {
+                        navigator.serviceWorker.register('/sw.js', { 
+                            scope: '/',
+                            updateViaCache: 'none'
+                        }).then(registration => {
+                            console.log('Service Worker зарегистрирован:', registration.scope);
+                            
+                            // Проверка обновлений
+                            registration.update();
+                            
+                            // Слушаем обновления
+                            registration.addEventListener('updatefound', () => {
+                                const newWorker = registration.installing;
+                                console.log('Обнаружено обновление Service Worker');
+                                
+                                newWorker.addEventListener('statechange', () => {
+                                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                        console.log('Новая версия доступна. Обновите страницу.');
+                                    }
+                                });
+                            });
+                        }).catch(err => {
+                            console.log('ServiceWorker регистрация не удалась: ', err);
+                        });
+                    }, 1000);
+                });
+            }
+
+            // Предзагрузка превью для улучшения производительности
+            function preloadPosters() {
+                const posters = Object.values(videos).map(v => v.poster);
+                posters.forEach(poster => {
+                    const img = new Image();
+                    img.src = poster;
+                });
+            }
+            
+            // Запускаем предзагрузку после загрузки страницы
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(() => preloadPosters());
+            } else {
+                setTimeout(preloadPosters, 2000);
+            }
+        });
     </script>
 </body>
 </html>
