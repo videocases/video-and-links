@@ -1,6 +1,6 @@
-// service-worker.js
-const CACHE_NAME = 'videoportfolio-v4';
-const ASSETS_TO_CACHE = [
+// sw.js
+const CACHE_NAME = 'videoportfolio-v9';
+const ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
@@ -8,47 +8,43 @@ const ASSETS_TO_CACHE = [
   '/assets/icon-512x512.png'
 ];
 
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS_TO_CACHE))
+self.addEventListener('install', e => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(names => {
-      return Promise.all(
-        names.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
-      );
-    })
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(names =>
+      Promise.all(names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n)))
+    )
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
+self.addEventListener('fetch', e => {
+  const url = new URL(e.request.url);
 
-  // Не кэшируем видео с Dropbox и Telegram
-  if (url.hostname.includes('dropbox') || 
-      url.pathname.match(/\.(mp4|webm|mov)$/i)) {
-    return fetch(event.request);
+  // Не трогаем Dropbox, Telegram, видео
+  if (url.hostname.includes('dropbox') || url.pathname.match(/\.(mp4|webm|mov)$/i)) {
+    return fetch(e.request);
   }
 
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request).then(networkResponse => {
-        // Кэшируем только успешные ответы
-        if (networkResponse && networkResponse.status === 200) {
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, networkResponse.clone());
-          });
+  e.respondWith(
+    caches.match(e.request).then(cached => {
+      if (cached) return cached;
+
+      return fetch(e.request).then(net => {
+        if (net && net.status === 200 && net.type === 'basic') {
+          const clone = net.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
         }
-        return networkResponse;
+        return net;
       });
     }).catch(() => {
-      // Оффлайн-фолбэк
-      if (event.request.destination === 'document') {
+      if (e.request.destination === 'document') {
         return caches.match('/index.html');
       }
     })
