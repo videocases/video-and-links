@@ -1,40 +1,94 @@
-// sw.js — финальная версия 2025
-const CACHE = 'videoportfolio-v10';
-
-const ASSETS = [
-  '/', '/index.html', '/manifest.json',
+// sw.js — оптимизированная версия
+const CACHE = 'videoportfolio-v12';
+const APP_SHELL = [
+  '/',
+  '/index.html',
+  '/manifest.json',
   '/assets/icon-192x192.png',
   '/assets/icon-512x512.png',
   '/assets/preview-1200x630.jpg'
 ];
 
+// Установка
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
-});
-
-self.addEventListener('activate', e => {
+  console.log('[Service Worker] Установка');
+  self.skipWaiting();
+  
   e.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(k => k !== CACHE).map(k => caches.delete(k))
-    )).then(() => self.clients.claim())
+    caches.open(CACHE)
+      .then(cache => cache.addAll(APP_SHELL))
+      .catch(err => console.log('[SW] Ошибка кэширования при установке:', err))
   );
 });
 
+// Активация
+self.addEventListener('activate', e => {
+  console.log('[Service Worker] Активация');
+  e.waitUntil(
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.map(key => {
+          if (key !== CACHE) {
+            console.log('[SW] Удаление старого кэша:', key);
+            return caches.delete(key);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+// Обработка запросов
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
-
-  // Пропускаем всё внешнее и видео
-  if (!url.origin.includes(self.location.origin) ||
-      url.pathname.match(/\.(mp4|webm|mov|jpg|png|webp)$/i)) {
-    return fetch(e.request);
+  const isExternal = url.origin !== self.location.origin;
+  
+  // Пропускаем внешние ресурсы (Dropbox, YouTube и т.д.)
+  if (isExternal) {
+    return;
   }
-
-  e.respondWith(
-    fetch(e.request)
-      .then(r => {
-        if (r.status === 200) caches.open(CACHE).then(c => c.put(e.request, r.clone()));
-        return r;
+  
+  // Для навигационных запросов (страниц)
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      caches.match('/index.html').then(cachedResponse => {
+        return cachedResponse || fetch(e.request);
       })
-      .catch(() => caches.match(e.request) || caches.match('/index.html'))
+    );
+    return;
+  }
+  
+  // Для статических ресурсов (CSS, JS, шрифты)
+  e.respondWith(
+    caches.match(e.request)
+      .then(cached => {
+        if (cached) return cached;
+        
+        return fetch(e.request)
+          .then(networkResponse => {
+            // Кэшируем только успешные ответы
+            if (networkResponse.ok) {
+              const clone = networkResponse.clone();
+              caches.open(CACHE)
+                .then(cache => cache.put(e.request, clone))
+                .catch(err => console.log('[SW] Ошибка кэширования:', err));
+            }
+            return networkResponse;
+          })
+          .catch(() => {
+            // Fallback для важных ресурсов
+            if (e.request.url.includes('.css')) {
+              return new Response('/* Fallback CSS */', {
+                headers: { 'Content-Type': 'text/css' }
+              });
+            }
+            if (e.request.url.includes('.js')) {
+              return new Response('// Fallback JS', {
+                headers: { 'Content-Type': 'application/javascript' }
+              });
+            }
+            return new Response('Оффлайн');
+          });
+      })
   );
 });
