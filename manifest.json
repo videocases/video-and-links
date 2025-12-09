@@ -1,27 +1,52 @@
 {
   "name": "Видеопортфолио | Видеооператор / Режиссёр монтажа",
   "short_name": "Видеопортфолио",
+  "description": "Профессиональное портфолио: видеооператор, режиссёр монтажа, motion design, фотография",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#ff1a1a",
-  "description": "Профессиональное портфолио: видеооператор, режиссёр монтажа, motion design",
-  "categories": ["portfolio", "video", "photography", "creative"],
-  "lang": "ru-RU",
-  "orientation": "portrait-primary",
+  "orientation": "any",
   "scope": "/",
+  "lang": "ru-RU",
+  "categories": ["portfolio", "video", "photography", "creative"],
+  
   "icons": [
     {
       "src": "/assets/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
     },
     {
       "src": "/assets/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any maskable"
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "/assets/preview-1200x630.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "form_factor": "wide"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Мои работы",
+      "short_name": "Работы",
+      "description": "Посмотреть все проекты",
+      "url": "/#main-content"
+    },
+    {
+      "name": "Контакты",
+      "short_name": "Связаться",
+      "description": "Связаться со мной",
+      "url": "/#footer"
     }
   ]
 }
