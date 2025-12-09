@@ -1,94 +1,91 @@
-// sw.js — оптимизированная версия
-const CACHE = 'videoportfolio-v12';
-const APP_SHELL = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/assets/icon-192x192.png',
-  '/assets/icon-512x512.png',
-  '/assets/preview-1200x630.jpg'
+const CACHE_NAME = 'videoportfolio-v1.3';
+const STATIC_CACHE = [
+    '/',
+    '/index.html',
+    '/manifest.json',
+    '/assets/icon-192x192.png',
+    '/assets/icon-512x512.png',
+    '/assets/preview-1200x630.jpg'
 ];
 
-// Установка
-self.addEventListener('install', e => {
-  console.log('[Service Worker] Установка');
-  self.skipWaiting();
-  
-  e.waitUntil(
-    caches.open(CACHE)
-      .then(cache => cache.addAll(APP_SHELL))
-      .catch(err => console.log('[SW] Ошибка кэширования при установке:', err))
-  );
-});
-
-// Активация
-self.addEventListener('activate', e => {
-  console.log('[Service Worker] Активация');
-  e.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys.map(key => {
-          if (key !== CACHE) {
-            console.log('[SW] Удаление старого кэша:', key);
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
-  );
-});
-
-// Обработка запросов
-self.addEventListener('fetch', e => {
-  const url = new URL(e.request.url);
-  const isExternal = url.origin !== self.location.origin;
-  
-  // Пропускаем внешние ресурсы (Dropbox, YouTube и т.д.)
-  if (isExternal) {
-    return;
-  }
-  
-  // Для навигационных запросов (страниц)
-  if (e.request.mode === 'navigate') {
-    e.respondWith(
-      caches.match('/index.html').then(cachedResponse => {
-        return cachedResponse || fetch(e.request);
-      })
+self.addEventListener('install', event => {
+    console.log('[Service Worker] Установка');
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => {
+                console.log('[Service Worker] Кэширование статических файлов');
+                return cache.addAll(STATIC_CACHE);
+            })
+            .then(() => self.skipWaiting())
     );
-    return;
-  }
-  
-  // Для статических ресурсов (CSS, JS, шрифты)
-  e.respondWith(
-    caches.match(e.request)
-      .then(cached => {
-        if (cached) return cached;
-        
-        return fetch(e.request)
-          .then(networkResponse => {
-            // Кэшируем только успешные ответы
-            if (networkResponse.ok) {
-              const clone = networkResponse.clone();
-              caches.open(CACHE)
-                .then(cache => cache.put(e.request, clone))
-                .catch(err => console.log('[SW] Ошибка кэширования:', err));
-            }
-            return networkResponse;
-          })
-          .catch(() => {
-            // Fallback для важных ресурсов
-            if (e.request.url.includes('.css')) {
-              return new Response('/* Fallback CSS */', {
-                headers: { 'Content-Type': 'text/css' }
-              });
-            }
-            if (e.request.url.includes('.js')) {
-              return new Response('// Fallback JS', {
-                headers: { 'Content-Type': 'application/javascript' }
-              });
-            }
-            return new Response('Оффлайн');
-          });
-      })
-  );
+});
+
+self.addEventListener('activate', event => {
+    console.log('[Service Worker] Активация');
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('[Service Worker] Удаление старого кэша:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        }).then(() => self.clients.claim())
+    );
+});
+
+self.addEventListener('fetch', event => {
+    const url = new URL(event.request.url);
+    
+    // Пропускаем видео и большие медиафайлы
+    if (url.pathname.endsWith('.mp4') || 
+        url.pathname.endsWith('.jpg') || 
+        url.hostname.includes('dropboxusercontent.com')) {
+        return;
+    }
+    
+    // Для статических файлов используем Cache First
+    if (url.pathname === '/' || 
+        url.pathname.includes('assets/') || 
+        url.pathname === '/manifest.json') {
+        event.respondWith(
+            caches.match(event.request)
+                .then(response => {
+                    if (response) {
+                        return response;
+                    }
+                    return fetch(event.request)
+                        .then(response => {
+                            if (!response || response.status !== 200 || response.type !== 'basic') {
+                                return response;
+                            }
+                            const responseToCache = response.clone();
+                            caches.open(CACHE_NAME)
+                                .then(cache => {
+                                    cache.put(event.request, responseToCache);
+                                });
+                            return response;
+                        });
+                })
+                .catch(() => {
+                    if (event.request.mode === 'navigate') {
+                        return caches.match('/');
+                    }
+                })
+        );
+        return;
+    }
+    
+    // Для всего остального используем Network First
+    event.respondWith(
+        fetch(event.request)
+            .then(response => {
+                return response;
+            })
+            .catch(() => {
+                return caches.match(event.request);
+            })
+    );
 });
