@@ -6,6 +6,27 @@
     <meta name="description" content="Профессиональное видеопортфолио: видеооператор, режиссёр монтажа, motion design">
     <title>Видеопортфолио | Видеооператор / Режиссёр монтажа</title>
     
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-89D5G35JW2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-89D5G35JW2', {
+            'debug_mode': true,
+            'page_title': 'Видеопортфолио',
+            'page_location': window.location.href
+        });
+        
+        // Функция для ручного отслеживания (для дебага)
+        window.trackEvent = function(eventName, params) {
+            if (typeof gtag !== 'undefined') {
+                gtag('event', eventName, params);
+                console.log('GA Event:', eventName, params);
+            }
+        };
+    </script>
+    
     <!-- PWA -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#ff1a1a">
@@ -1881,80 +1902,115 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ===================== 1. ВИДЕО ДАННЫЕ (ФИКС CORS) =====================
+            // ===================== 0. АНАЛИТИКА =====================
+            // Функция для отслеживания событий с автоматическим логированием
+            function trackGAEvent(eventName, params) {
+                try {
+                    if (typeof gtag !== 'undefined') {
+                        gtag('event', eventName, params);
+                        console.log('[GA] Отправлено событие:', eventName, params);
+                    }
+                } catch (error) {
+                    console.warn('[GA] Ошибка отправки события:', error);
+                }
+            }
+
+            // Отслеживание посещения страницы
+            trackGAEvent('page_view', {
+                'page_title': 'Видеопортфолио',
+                'page_location': window.location.href,
+                'page_path': window.location.pathname
+            });
+
+            // ===================== 1. ВИДЕО ДАННЫЕ =====================
             const videos = {
                 '1': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/1kcbz2ynfrj5z5jhhfedo/1.mp4?rlkey=g9lfonffd6wdwggwr3awjj4pn&st=mz3wl87h&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/1xy557h3u18wsa36o6nuj/Poster1.jpg?rlkey=s8racbym820556d4fw0wk3wcd&st=u0vj7c7j&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/1xy557h3u18wsa36o6nuj/Poster1.jpg?rlkey=s8racbym820556d4fw0wk3wcd&st=u0vj7c7j&raw=1',
+                    name: 'Интервью с участниками выставки и лекция'
                 },
                 '2': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/ietlkovv6f4o7oc7yuyzl/2.mp4?rlkey=xvs86h98221hxd587q549f78n&st=23f5fqx0&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/nke1mzrjf3uwtbz9cygmf/Poster2.jpg?rlkey=shbrhn0q3cuznmpahjaiv28z2&st=8jffh8ku&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/nke1mzrjf3uwtbz9cygmf/Poster2.jpg?rlkey=shbrhn0q3cuznmpahjaiv28z2&st=8jffh8ku&raw=1',
+                    name: 'Визажист выбирает, тестирует косметику'
                 },
                 '3': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/i7y8ev7x4qu3pp4amgkxq/3.mp4?rlkey=3za5i100wp1obk7o8bf94w3cp&st=5vfnfhb1&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/d44zfv6wq1tfv4sut3how/Poster3.jpg?rlkey=vjtc5to2ovbd8mxz7elxwh618&st=w7giqist&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/d44zfv6wq1tfv4sut3how/Poster3.jpg?rlkey=vjtc5to2ovbd8mxz7elxwh618&st=w7giqist&raw=1',
+                    name: 'Участники викторины получают призы'
                 },
                 '4': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/5x6cldtcz3ft1q4bsljtv/4.mp4?rlkey=e847qseognwbb52qanstdreul&st=5rp059jw&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/309k21er19wg19c7ivtfs/Poster4.jpg?rlkey=40q3869z1hioag1o9hgdjycqq&st=mm7wg3rz&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/309k21er19wg19c7ivtfs/Poster4.jpg?rlkey=40q3869z1hioag1o9hgdjycqq&st=mm7wg3rz&raw=1',
+                    name: 'Поздравление от коллег'
                 },
                 '5': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/uf3hshj7h2o72rhkixxd0/5.mp4?rlkey=y3yxzpncipj239qi18lbc860s&st=ief2kmjy&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/hdadkxuv8mug8m5hadw4p/Poster5.jpg?rlkey=8bc5hrdqxmnbp6qs1t56p6t84&st=bgf2lof9&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/hdadkxuv8mug8m5hadw4p/Poster5.jpg?rlkey=8bc5hrdqxmnbp6qs1t56p6t84&st=bgf2lof9&raw=1',
+                    name: 'Различные антистресс-игрушки'
                 },
                 '6': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/0oiqw6ak3md5zcfb0zt0g/6-Motion-design.mp4?rlkey=yw30nifvvbik5jgxqh81mn9sb&st=91hux8p4&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/yobz3e4smhh6v5knhwajc/Poster6-Motion-design.jpg?rlkey=n4wt17t840gfh0ui3xk0wvayh&st=4tnl1bw0&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/yobz3e4smhh6v5knhwajc/Poster6-Motion-design.jpg?rlkey=n4wt17t840gfh0ui3xk0wvayh&st=4tnl1bw0&raw=1',
+                    name: 'Советы по продажам'
                 },
                 '7': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/ncwtuq0yg3jgrbtj6une7/7-Motion-design.mp4?rlkey=c9pxgebw88694i15w8artp2mq&st=dranyacq&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/8nhzonnlj5ecrqtayvrnc/Poster7-Motion-design.jpg?rlkey=m740wxa9ybbzem9zz0ikw8egw&st=hvudgiss&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/8nhzonnlj5ecrqtayvrnc/Poster7-Motion-design.jpg?rlkey=m740wxa9ybbzem9zz0ikw8egw&st=hvudgiss&raw=1',
+                    name: 'Баннер-поздравление'
                 },
                 '10': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/h2ldzr2rkl1noth813iqi/10.mp4?rlkey=zeditqiouort8m5xqmosstl5g&st=6v8pvyzf&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/2rymxzmnab4q8l9uxddsr/Poster10.jpg?rlkey=34hsg4jpxkfovgjxjn4bfzwst&st=05ie9sxs&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/2rymxzmnab4q8l9uxddsr/Poster10.jpg?rlkey=34hsg4jpxkfovgjxjn4bfzwst&st=05ie9sxs&raw=1',
+                    name: 'Технологии сервиса доставки готовой еды'
                 },
                 '11': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/byh3zovu9pgps7858ftkw/11.mp4?rlkey=20zv9k9sht2ls9tjdluz8ttdt&st=emh8sfk0&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/kx34g9lxy1iemhydi3eze/Poster11.jpg?rlkey=fkvk7a7i0nwf7quzdukvoe89u&st=kfjjufag&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/kx34g9lxy1iemhydi3eze/Poster11.jpg?rlkey=fkvk7a7i0nwf7quzdukvoe89u&st=kfjjufag&raw=1',
+                    name: 'Приготовления к приему гостей в доме'
                 },
                 '12': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/pzipl4da7k2m6nz6q69bp/12.mp4?rlkey=x4orcq4ro1ig4sebh18c3iyai&st=kvsx9da8&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/m6x4tkwlfq9qna824e2f0/Poster12.jpg?rlkey=iulyzjnrn9gqw8o4hwnd5h68h&st=vw55eauf&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/m6x4tkwlfq9qna824e2f0/Poster12.jpg?rlkey=iulyzjnrn9gqw8o4hwnd5h68h&st=vw55eauf&raw=1',
+                    name: 'Строительство центра обработки данных'
                 },
                 '13': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/p75pp8h01hm23wl7tzc7o/13.mp4?rlkey=wdnwsau2yae6ttes37a62h5go&st=e5jn4il8&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/3ejyhm4klk6dstwg7drt5/Poster13.jpg?rlkey=gotyycse4vka45tc3y036ntmx&st=6n8rec75&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/3ejyhm4klk6dstwg7drt5/Poster13.jpg?rlkey=gotyycse4vka45tc3y036ntmx&st=6n8rec75&raw=1',
+                    name: 'Нарезка из видео, которое отснял (исходники)'
                 },
                 '14': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/jypfmbn79ah7zef098fq3/14.mp4?rlkey=jvqn3rf4sn5uebse5jn7h46xq&st=b9tirxoh&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/nkucp7q7bqkfico9cem5e/Poster14.jpg?rlkey=ill0fq8iqt512nwysbr74wi6t&st=derdvjat&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/nkucp7q7bqkfico9cem5e/Poster14.jpg?rlkey=ill0fq8iqt512nwysbr74wi6t&st=derdvjat&raw=1',
+                    name: 'Экологичное мышление в бизнесе'
                 },
                 '15': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/13xvmjnd9m2nbuzb6w2qz/15.mp4?rlkey=2qqwwnfbrvbmdubvha7ebyohg&st=mup9ep66&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/baxee7rbdxqhqpljx7p0i/Poster15.jpg?rlkey=jn8zzvpkxwfjdp4s2uzgt5uqe&st=qrsu0t9c&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/baxee7rbdxqhqpljx7p0i/Poster15.jpg?rlkey=jn8zzvpkxwfjdp4s2uzgt5uqe&st=qrsu0t9c&raw=1',
+                    name: 'Акция по безопасности дорожного движения'
                 },
                 '16': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/7r4ndyv2xag1wle6srwmg/16.mp4?rlkey=6s8sme8pxf2rva0n8a2teka8j&st=oo6podu1&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/s1gbdhq9awkq43pq1pfxq/Poster16.jpg?rlkey=05vj1brz6h4vbo3us5qt309qd&st=8siirf3t&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/s1gbdhq9awkq43pq1pfxq/Poster16.jpg?rlkey=05vj1brz6h4vbo3us5qt309qd&st=8siirf3t&raw=1',
+                    name: 'Путь от инженера до стилиста'
                 },
                 '17': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/wst89qq17hj8gajrpwjym/17.mp4?rlkey=aqt9rztlz1zguwx4zm6qm9lnr&st=pg43efcy&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/e06o82ksidv6id8411hhd/Poster17.jpg?rlkey=t6jnns29ld74hz9x9hl8euavf&st=3b7aqpoz&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/e06o82ksidv6id8411hhd/Poster17.jpg?rlkey=t6jnns29ld74hz9x9hl8euavf&st=3b7aqpoz&raw=1',
+                    name: 'Производство детских каш и молочных смесей'
                 },
                 '18': { 
                     src: 'https://dl.dropboxusercontent.com/scl/fi/guurlyhl42q6ywxvpdy54/18.mp4?rlkey=jzf3kkf4wvqz9h3xu96bcpthf&st=clskd4z6&raw=1', 
-                    poster: 'https://dl.dropboxusercontent.com/scl/fi/or6z3ms1kf056ncz4dk18/Poster18.jpg?rlkey=kekf50scnv80tlk57kwacsabk&st=7m2ui0ni&raw=1'
+                    poster: 'https://dl.dropboxusercontent.com/scl/fi/or6z3ms1kf056ncz4dk18/Poster18.jpg?rlkey=kekf50scnv80tlk57kwacsabk&st=7m2ui0ni&raw=1',
+                    name: 'Прямая трансляция музыкального фестиваля'
                 }
             };
 
-            // ===================== 2. ПРЕДЗАГРУЗКА (ОПТИМИЗИРОВАННАЯ) =====================
+            // ===================== 2. ПРЕДЗАГРУЗКА =====================
             function preloadVideo(id) {
                 const videoData = videos[id];
                 if (!videoData || window.preloadedVideos?.has(id)) return;
                 
-                // Предзагрузка видео с оптимизацией
                 const videoLink = document.createElement('link');
                 videoLink.rel = 'preload';
                 videoLink.as = 'fetch';
@@ -1964,7 +2020,6 @@
                 videoLink.fetchPriority = 'high';
                 document.head.appendChild(videoLink);
                 
-                // Предзагрузка постера
                 const posterImg = new Image();
                 posterImg.src = videoData.poster;
                 posterImg.fetchPriority = 'high';
@@ -1973,46 +2028,20 @@
                 window.preloadedVideos = window.preloadedVideos || new Set();
                 window.preloadedVideos.add(id);
                 
-                // Удаляем preload ссылки через 5 минут (300000 мс), чтобы избежать предупреждений
                 setTimeout(() => videoLink.remove(), 300000);
                 
-                // Логирование для отладки
-                console.log(`Предзагружено видео ${id}`);
+                console.log(`[Preload] Загружено видео ${id}`);
             }
 
-            // Определяем, нужно ли предзагружать видео
             const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
             const isSaveData = navigator.connection && navigator.connection.saveData;
             const shouldPreload = !isMobile || !isSaveData;
 
-            // Предзагрузить первые 4 видео после загрузки страницы (если не мобильное устройство или не включен Data Saver)
             if (shouldPreload) {
                 setTimeout(() => {
                     ['1', '2', '3', '4'].forEach(preloadVideo);
                 }, 1500);
             }
-
-            // Предзагрузка при наведении на постер
-            document.querySelectorAll('.video-poster-container').forEach(container => {
-                container.addEventListener('mouseenter', () => {
-                    if (shouldPreload) {
-                        const videoId = container.dataset.videoId;
-                        if (videoId && !window.preloadedVideos?.has(videoId)) {
-                            preloadVideo(videoId);
-                        }
-                    }
-                }, { once: true });
-                
-                // Также предзагрузка при фокусе (для доступности)
-                container.addEventListener('focus', () => {
-                    if (shouldPreload) {
-                        const videoId = container.dataset.videoId;
-                        if (videoId && !window.preloadedVideos?.has(videoId)) {
-                            preloadVideo(videoId);
-                        }
-                    }
-                }, { once: true });
-            });
 
             // ===================== 3. МОДАЛЬНОЕ ОКНО ВИДЕО =====================
             const videoModal = document.getElementById('video-modal');
@@ -2020,7 +2049,6 @@
             const modalVideo = videoModal.querySelector('video');
             const modalPhoto = photoModal.querySelector('.modal-photo');
             
-            // Глобальные флаги состояния
             let isVideoModalOpen = false;
             let currentVideoId = null;
             let lastOpenedVideoId = null;
@@ -2029,57 +2057,117 @@
                 const videoData = videos[videoId];
                 if (!videoData) return;
 
-                // Если уже открыто это же видео - просто воспроизводим
                 if (isVideoModalOpen && currentVideoId === videoId && modalVideo.readyState > 2) {
                     modalVideo.currentTime = 0;
                     modalVideo.play().catch(handleAutoplayError);
                     return;
                 }
 
-                // Сброс ошибок и состояния
                 modalVideo.style.opacity = '1';
                 modalVideo.controls = true;
                 modalVideo.parentNode.querySelectorAll('.video-error').forEach(el => el.remove());
                 
-                // Устанавливаем флаги состояния
                 isVideoModalOpen = true;
                 currentVideoId = videoId;
                 lastOpenedVideoId = videoId;
 
-                // Загружаем видео с CORS атрибутами
                 modalVideo.poster = videoData.poster;
                 modalVideo.src = videoData.src + '#t=0.001';
                 
-                // Показываем модалку
                 videoModal.classList.add('active');
                 document.body.style.overflow = 'hidden';
                 document.documentElement.style.overflow = 'hidden';
 
-                // Фокус на модальном окне для доступности
                 setTimeout(() => videoModal.focus(), 100);
 
-                // Обработчик успешной загрузки
+                // Отслеживание начала просмотра
+                trackGAEvent('video_start', {
+                    'video_id': videoId,
+                    'video_name': videoData.name,
+                    'video_category': 'portfolio'
+                });
+
+                // Переменные для отслеживания прогресса
+                let quartiles = {
+                    '25': false,
+                    '50': false,
+                    '75': false,
+                    '95': false
+                };
+
                 modalVideo.onloadeddata = () => {
-                    // Проверяем, что модалка все еще открыта
                     if (!isVideoModalOpen || currentVideoId !== videoId) return;
                     
                     modalVideo.style.opacity = '1';
                     
-                    // Пытаемся воспроизвести с обработкой ошибок autoplay
                     modalVideo.play().catch(handleAutoplayError);
                 };
 
-                // Обработчик ошибок загрузки видео
+                // Отслеживание прогресса просмотра
+                modalVideo.ontimeupdate = () => {
+                    if (!isVideoModalOpen || currentVideoId !== videoId || !modalVideo.duration) return;
+                    
+                    const progress = modalVideo.currentTime / modalVideo.duration;
+                    
+                    if (progress >= 0.25 && !quartiles['25']) {
+                        quartiles['25'] = true;
+                        trackGAEvent('video_25', {
+                            'video_id': videoId,
+                            'video_name': videoData.name,
+                            'progress': '25%'
+                        });
+                    }
+                    if (progress >= 0.5 && !quartiles['50']) {
+                        quartiles['50'] = true;
+                        trackGAEvent('video_50', {
+                            'video_id': videoId,
+                            'video_name': videoData.name,
+                            'progress': '50%'
+                        });
+                    }
+                    if (progress >= 0.75 && !quartiles['75']) {
+                        quartiles['75'] = true;
+                        trackGAEvent('video_75', {
+                            'video_id': videoId,
+                            'video_name': videoData.name,
+                            'progress': '75%'
+                        });
+                    }
+                    if (progress >= 0.95 && !quartiles['95']) {
+                        quartiles['95'] = true;
+                        trackGAEvent('video_95', {
+                            'video_id': videoId,
+                            'video_name': videoData.name,
+                            'progress': '95%'
+                        });
+                    }
+                };
+
+                modalVideo.onpause = () => {
+                    trackGAEvent('video_pause', {
+                        'video_id': videoId,
+                        'video_name': videoData.name,
+                        'current_time': Math.floor(modalVideo.currentTime)
+                    });
+                };
+
+                modalVideo.onended = () => {
+                    trackGAEvent('video_complete', {
+                        'video_id': videoId,
+                        'video_name': videoData.name
+                    });
+                };
+
                 modalVideo.onerror = () => {
                     if (!isVideoModalOpen || currentVideoId !== videoId) return;
                     
                     console.error('Ошибка загрузки видео', videoId);
                     showVideoError(videoData);
-                };
-
-                // Обработчик окончания видео
-                modalVideo.onended = () => {
-                    // Не закрываем автоматически, даем пользователю контроль
+                    
+                    trackGAEvent('video_error', {
+                        'video_id': videoId,
+                        'error_type': 'load_error'
+                    });
                 };
             }
             
@@ -2093,7 +2181,6 @@
                 modalVideo.src = '';
                 currentVideoId = null;
                 
-                // Возвращаем фокус на элемент, который открыл модалку
                 const lastFocused = document.querySelector(`[data-video-id="${lastOpenedVideoId}"]`);
                 if (lastFocused) lastFocused.focus();
             }
@@ -2104,8 +2191,13 @@
                 document.documentElement.style.overflow = 'hidden';
                 modalPhoto.src = photoSrc;
                 
-                // Фокус на модальном окне для доступности
                 setTimeout(() => photoModal.focus(), 100);
+                
+                // Отслеживание просмотра фото
+                trackGAEvent('photo_view', {
+                    'photo_url': photoSrc,
+                    'photo_category': 'portfolio'
+                });
             }
             
             function closePhotoModal() {
@@ -2114,25 +2206,21 @@
                 document.documentElement.style.overflow = '';
                 modalPhoto.src = '';
                 
-                // Возвращаем фокус
                 const lastFocused = document.activeElement;
                 if (lastFocused && lastFocused.closest('.photo-container')) {
                     lastFocused.focus();
                 }
             }
             
-            // Обработчик ошибок autoplay
             function handleAutoplayError(err) {
                 console.log('Autoplay blocked, showing controls:', err.name);
                 modalVideo.controls = true;
                 
-                // Не показываем пользователю технические ошибки
                 if (err.name !== 'AbortError' && err.name !== 'NotAllowedError') {
                     console.warn('Video playback error:', err);
                 }
             }
             
-            // Показать ошибку загрузки
             function showVideoError(videoData) {
                 modalVideo.style.opacity = '0.5';
                 const errorDiv = document.createElement('div');
@@ -2150,22 +2238,36 @@
                 modalVideo.parentNode.appendChild(errorDiv);
             }
             
-            // ===================== 4. ОБРАБОТЧИКИ КЛИКОВ И КЛАВИАТУРЫ =====================
+            // ===================== 4. ОБРАБОТЧИКИ =====================
             document.querySelectorAll('.video-poster-container').forEach(container => {
                 const videoId = container.dataset.videoId;
                 
-                // Клик мышью
                 container.addEventListener('click', () => {
                     openVideoModal(videoId);
                 });
                 
-                // Enter или пробел на клавиатуре
                 container.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
                         openVideoModal(videoId);
                     }
                 });
+                
+                container.addEventListener('mouseenter', () => {
+                    if (shouldPreload) {
+                        if (videoId && !window.preloadedVideos?.has(videoId)) {
+                            preloadVideo(videoId);
+                        }
+                    }
+                }, { once: true });
+                
+                container.addEventListener('focus', () => {
+                    if (shouldPreload) {
+                        if (videoId && !window.preloadedVideos?.has(videoId)) {
+                            preloadVideo(videoId);
+                        }
+                    }
+                }, { once: true });
             });
             
             document.querySelectorAll('.photo-play-button, .photo-item').forEach(element => {
@@ -2175,7 +2277,6 @@
                     openPhotoModal(img.src);
                 });
                 
-                // Клавиатурные события для фото
                 element.addEventListener('keydown', (e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
                         e.preventDefault();
@@ -2185,7 +2286,7 @@
                 });
             });
             
-            // ===================== 5. ОБРАБОТЧИКИ ЗАКРЫТИЯ МОДАЛОК =====================
+            // ===================== 5. ЗАКРЫТИЕ МОДАЛОК =====================
             videoModal.addEventListener('click', e => {
                 if (e.target === videoModal || e.target.classList.contains('close-modal')) {
                     closeVideoModal();
@@ -2208,7 +2309,6 @@
                     }
                 }
                 
-                // Закрытие модалки по Tab при фокусе на закрывающей кнопке и нажатии Tab
                 if (e.key === 'Tab' && document.activeElement.classList.contains('close-modal')) {
                     if (videoModal.classList.contains('active')) {
                         setTimeout(() => {
@@ -2234,6 +2334,12 @@
                     tag.classList.add('active');
                     const filter = tag.dataset.filter;
                     
+                    // Отслеживание использования фильтров
+                    trackGAEvent('filter_used', {
+                        'filter_name': filter,
+                        'filter_category': 'portfolio'
+                    });
+                    
                     document.querySelectorAll('.portfolio-item').forEach(item => {
                         if (filter === 'all' || item.dataset.tags.includes(filter)) {
                             item.style.display = 'block';
@@ -2245,25 +2351,77 @@
                         }
                     });
                     
-                    // Прокрутка к началу сетки после фильтрации
                     document.querySelector('.portfolio-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 });
             });
             
-            // ===================== 7. PWA: Service Worker =====================
+            // ===================== 7. ОТСЛЕЖИВАНИЕ КЛИКОВ ПО ССЫЛКАМ =====================
+            document.querySelectorAll('a[href*="t.me"]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const projectItem = link.closest('.portfolio-item');
+                    const projectId = projectItem ? projectItem.querySelector('[data-video-id]')?.dataset.videoId || 'unknown' : 'unknown';
+                    const linkType = link.href.includes('Video_and_Links') ? 'portfolio_telegram' : 'contact_telegram';
+                    
+                    trackGAEvent('telegram_click', {
+                        'project_id': projectId,
+                        'link_url': link.href,
+                        'link_type': linkType
+                    });
+                });
+            });
+            
+            document.querySelectorAll('a[href*="youtube.com"], a[href*="youtu.be"]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const projectItem = link.closest('.portfolio-item');
+                    const projectId = projectItem ? projectItem.querySelector('[data-video-id]')?.dataset.videoId || 'unknown' : 'unknown';
+                    
+                    trackGAEvent('youtube_click', {
+                        'project_id': projectId,
+                        'link_url': link.href
+                    });
+                });
+            });
+            
+            document.querySelectorAll('a[href*="instagram.com"]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const projectItem = link.closest('.portfolio-item');
+                    const projectId = projectItem ? projectItem.querySelector('[data-video-id]')?.dataset.videoId || 'unknown' : 'unknown';
+                    
+                    trackGAEvent('instagram_click', {
+                        'project_id': projectId,
+                        'link_url': link.href
+                    });
+                });
+            });
+            
+            document.querySelectorAll('.telegram-contact, .phone-contact').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const contactType = link.classList.contains('telegram-contact') ? 'telegram' : 'phone';
+                    trackGAEvent('contact_click', {
+                        'contact_type': contactType,
+                        'contact_value': link.href
+                    });
+                });
+            });
+            
+            // ===================== 8. PWA =====================
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/sw.js').then(() => {
                         console.log('Service Worker зарегистрирован');
+                        trackGAEvent('pwa_registered', {
+                            'pwa_status': 'active'
+                        });
                     }).catch(err => {
                         console.log('ServiceWorker регистрация не удалась: ', err);
+                        trackGAEvent('pwa_error', {
+                            'error': err.message
+                        });
                     });
                 });
             }
             
-            // ===================== 8. ДОПОЛНИТЕЛЬНЫЕ ОПТИМИЗАЦИИ =====================
-            
-            // Lazy loading для изображений в viewport
+            // ===================== 9. LAZY LOADING =====================
             const imageObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -2279,17 +2437,15 @@
                 rootMargin: '100px'
             });
             
-            // Наблюдаем за всеми изображениями с lazy loading
             document.querySelectorAll('img[loading="lazy"]').forEach(img => {
                 if (!img.src) return;
                 imageObserver.observe(img);
             });
             
-            // Улучшение производительности при скролле
+            // ===================== 10. ПРОИЗВОДИТЕЛЬНОСТЬ =====================
             let scrollTimer;
             window.addEventListener('scroll', () => {
                 clearTimeout(scrollTimer);
-                // Приостанавливаем видео в модалке при скролле
                 if (isVideoModalOpen && !modalVideo.paused) {
                     scrollTimer = setTimeout(() => {
                         if (isVideoModalOpen) {
@@ -2299,12 +2455,24 @@
                 }
             }, { passive: true });
             
-            // Управление видимостью страницы
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden && isVideoModalOpen && !modalVideo.paused) {
                     modalVideo.pause();
                 }
             });
+
+            // ===================== 11. ДЕБАГ ИНФОРМАЦИЯ =====================
+            console.log('[Analytics] GA4 настроен с ID: G-89D5G35JW2');
+            console.log('[Portfolio] Загружено проектов: 18');
+            console.log('[Video] Доступно видео: ' + Object.keys(videos).length);
+            
+            // Тестовое событие для проверки аналитики
+            setTimeout(() => {
+                trackGAEvent('page_loaded', {
+                    'load_time': performance.now().toFixed(2),
+                    'user_agent': navigator.userAgent.substring(0, 50)
+                });
+            }, 2000);
         });
     </script>
 </body>
