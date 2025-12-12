@@ -6,6 +6,9 @@
     <meta name="description" content="Профессиональное видеопортфолио: видеооператор, режиссёр монтажа, motion design">
     <title>Видеопортфолио | Видеооператор / Режиссёр монтажа</title>
     
+    <!-- Канонический URL -->
+    <link rel="canonical" href="https://video-and-links.vercel.app">
+    
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-89D5G35JW2"></script>
     <script>
@@ -378,6 +381,28 @@
             line-height: 1.2;
         }
         
+        /* Project title styles */
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            line-height: 1.3;
+            display: block;
+        }
+        
+        /* Role title styles */
+        .role-title {
+            color: var(--secondary-color);
+            margin-bottom: 12px;
+            display: block;
+            min-height: 24px;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+        
         /* Filters section */
         .filters-section {
             margin-bottom: 30px;
@@ -524,21 +549,6 @@
         /* Content styles */
         .portfolio-content {
             padding: 20px;
-        }
-        
-        .item-description {
-            color: #666;
-            margin-bottom: 12px;
-            line-height: 1.5;
-            min-height: 60px;
-        }
-        
-        .item-role {
-            font-weight: 500;
-            color: var(--secondary-color);
-            margin-bottom: 12px;
-            display: block;
-            min-height: 24px;
         }
         
         .item-links {
@@ -940,6 +950,10 @@
                 font-size: 1rem;
             }
             
+            .project-title {
+                font-size: 1.1rem;
+            }
+            
             .header-logo {
                 width: 48px;
                 height: 48px;
@@ -988,6 +1002,10 @@
             
             h1 {
                 font-size: 1.8rem;
+            }
+            
+            .project-title {
+                font-size: 1rem;
             }
             
             .header-logo {
@@ -1128,8 +1146,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Интервью с участниками выставки и лекция"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-1-description">📝Описание: Интервью с участниками выставки и лекция</p>
-                        <span class="item-role">📷 Роль: Видеооператор / Режиссер монтажа</span>
+                        <h2 class="project-title" id="video-1-title">Интервью с участниками выставки и лекция</h2>
+                        <span class="role-title">Видеооператор / Режиссер монтажа</span>
                         <div class="item-links">
                             <a href="https://m.youtube.com/watch?v=jl-Vd49s2m0" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1169,8 +1187,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Визажист выбирает, тестирует косметику"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-2-description">📝Описание: Визажист выбирает, тестирует косметику</p>
-                        <span class="item-role">📷 Роль: Видеооператор / Режиссер монтажа</span>
+                        <h2 class="project-title" id="video-2-title">Визажист выбирает, тестирует косметику</h2>
+                        <span class="role-title">Видеооператор / Режиссер монтажа</span>
                         <div class="item-links">
                             <a href="https://m.youtube.com/watch?v=QeMSbCnISU0" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1210,8 +1228,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Участники викторины получают призы"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-3-description">📝Описание: Участники викторины получают призы</p>
-                        <span class="item-role">📷 Роль: Видео (съёмка, интервьюирование, монтаж)</span>
+                        <h2 class="project-title" id="video-3-title">Участники викторины получают призы</h2>
+                        <span class="role-title">Видео (съёмка, интервьюирование, монтаж)</span>
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CVfdZgpKM-v/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1251,8 +1269,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Поздравление от коллег"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-4-description">📝Описание: Поздравление от коллег</p>
-                        <span class="item-role">📷 Роль: Видео (съёмка, монтаж, поиск спикеров)</span>
+                        <h2 class="project-title" id="video-4-title">Поздравление от коллег</h2>
+                        <span class="role-title">Видео (съёмка, монтаж, поиск спикеров)</span>
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CRtOlQzB2Cq/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1292,8 +1310,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Различные антистресс-игрушки"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-5-description">📝Описание: Различные антистресс-игрушки</p>
-                        <span class="item-role">📷 Роль: Видео (съёмка, монтаж)</span>
+                        <h2 class="project-title" id="video-5-title">Различные антистресс-игрушки</h2>
+                        <span class="role-title">Видео (съёмка, монтаж)</span>
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CPKwBiqh7T3/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1333,8 +1351,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Советы по продажам"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-6-description">📝Описание: Советы по продажам</p>
-                        <span class="item-role">✨ Роль: Motion design (персонажная анимация)</span>
+                        <h2 class="project-title" id="video-6-title">Советы по продажам</h2>
+                        <span class="role-title">Motion design (персонажная анимация)</span>
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CPVDzVsh4SQ/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1373,8 +1391,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Баннер-поздравление"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-7-description">📝Описание: Баннер-поздравление</p>
-                        <span class="item-role">✨ Роль: Motion design (анимация)</span>
+                        <h2 class="project-title" id="video-7-title">Баннер-поздравление</h2>
+                        <span class="role-title">Motion design (анимация)</span>
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CVCjP2JIlkr/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1415,8 +1433,8 @@
                         </div>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description">📝Описание: Товары для школы</p>
-                        <span class="item-role">📷 Роль: Фото (съёмка, ретушь)</span>
+                        <h2 class="project-title">Товары для школы</h2>
+                        <span class="role-title">Фото (съёмка, ретушь)</span>
                         <div class="item-links">
                             <a href="https://www.instagram.com/p/CSeO-ZyqD_9/" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1458,8 +1476,8 @@
                         </div>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description">📝Описание: Новогоднее оформление</p>
-                        <span class="item-role">📷 Роль: Фото (сайт) - съёмка, ретушь</span>
+                        <h2 class="project-title">Новогоднее оформление</h2>
+                        <span class="role-title">Фото (сайт) - съёмка, ретушь</span>
                         <div class="item-links">
                             <a href="https://is.gd/55qyuT" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1499,8 +1517,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Технологии сервиса доставки готовой еды"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-10-description">📝Описание: Технологии сервиса доставки готовой еды</p>
-                        <span class="item-role">📷 Роль: Продюсер (интервьюирование) / Видеооператор / Режиссер монтажа</span>
+                        <h2 class="project-title" id="video-10-title">Технологии сервиса доставки готовой еды</h2>
+                        <span class="role-title">Продюсер (интервьюирование) / Видеооператор / Режиссер монтажа</span>
                         <div class="item-links">
                             <a href="https://m.youtube.com/watch?v=xE1mrYUBl90" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1540,8 +1558,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Приготовления к приему гостей в доме"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-11-description">📝Описание: Приготовления к приему гостей в доме</p>
-                        <span class="item-role">📷 Роль: Видеооператор</span>
+                        <h2 class="project-title" id="video-11-title">Приготовления к приему гостей в доме</h2>
+                        <span class="role-title">Видеооператор</span>
                         <div class="item-links">
                             <a href="https://m.youtube.com/watch?v=sPFabQyXiTA" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1580,8 +1598,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Строительство центра обработки данных"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-12-description">📝Описание: Строительство центра обработки данных</p>
-                        <span class="item-role">📷 Роль: Видеооператор</span>
+                        <h2 class="project-title" id="video-12-title">Строительство центра обработки данных</h2>
+                        <span class="role-title">Видеооператор</span>
                         <div class="item-links">
                             <a href="https://m.youtube.com/watch?v=ytQUECyoTwo" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1620,8 +1638,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Нарезка из видео, которое отснял (исходники)"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-13-description">📝Описание: Нарезка из видео, которое отснял (исходники)</p>
-                        <span class="item-role">📷 Роль: Видеооператор (монтаж этого видео)</span>
+                        <h2 class="project-title" id="video-13-title">Нарезка из видео, которое отснял (исходники)</h2>
+                        <span class="role-title">Видеооператор (монтаж этого видео)</span>
                         <div class="item-links">
                             <a href="https://youtu.be/M8rTPq17mRg" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1660,8 +1678,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Экологичное мышление в бизнесе"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-14-description">📝Описание: Экологичное мышление в бизнесе</p>
-                        <span class="item-role">📷 Роль: Видеооператор / Режиссер монтажа</span>
+                        <h2 class="project-title" id="video-14-title">Экологичное мышление в бизнесе</h2>
+                        <span class="role-title">Видеооператор / Режиссер монтажа</span>
                         <div class="item-links">
                             <a href="https://m.youtube.com/watch?v=DtCzF1jqv_I" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1701,8 +1719,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Акция по безопасности дорожного движения"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-15-description">📝Описание: Акция по безопасности дорожного движения</p>
-                        <span class="item-role">📷 Роль: Видеожурналист (интервьюирование) / Видеооператор</span>
+                        <h2 class="project-title" id="video-15-title">Акция по безопасности дорожного движения</h2>
+                        <span class="role-title">Видеожурналист (интервьюирование) / Видеооператор</span>
                         <div class="item-links">
                             <a href="https://youtube.com/watch?v=YcHEg89pbtw&t=13" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1741,8 +1759,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Путь от инженера до стилиста"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-16-description">📝Описание: Путь от инженера до стилиста</p>
-                        <span class="item-role">📷 Роль: Видеооператор</span>
+                        <h2 class="project-title" id="video-16-title">Путь от инженера до стилиста</h2>
+                        <span class="role-title">Видеооператор</span>
                         <div class="item-links">
                             <a href="https://youtu.be/4bDa-R12CkA?t=6" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1781,8 +1799,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Производство детских каш и молочных смесей"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-17-description">📝Описание: Производство детских каш и молочных смесей</p>
-                        <span class="item-role">📷 Роль: Видеооператор / Режиссер монтажа</span>
+                        <h2 class="project-title" id="video-17-title">Производство детских каш и молочных смесей</h2>
+                        <span class="role-title">Видеооператор / Режиссер монтажа</span>
                         <div class="item-links">
                             <a href="https://youtu.be/1gLplvWDocc?t=19" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -1822,8 +1840,8 @@
                         <button class="play-button" aria-label="Воспроизвести видео: Прямая трансляция музыкального фестиваля"></button>
                     </div>
                     <div class="portfolio-content">
-                        <p class="item-description" id="video-18-description">📝Описание: Прямая трансляция музыкального фестиваля</p>
-                        <span class="item-role">📷 Роль: Видеооператор</span>
+                        <h2 class="project-title" id="video-18-title">Прямая трансляция музыкального фестиваля</h2>
+                        <span class="role-title">Видеооператор</span>
                         <div class="item-links">
                             <a href="https://youtube.com/watch?v=vGs7xxOttuo" class="item-link" target="_blank" rel="noopener noreferrer">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
