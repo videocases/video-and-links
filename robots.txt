@@ -2,24 +2,25 @@ User-agent: *
 Allow: /
 Disallow: /private/
 Disallow: /admin/
-Disallow: /login/
 
 Sitemap: https://video-and-links.vercel.app/sitemap.xml
 
-# Дополнительные директивы для поисковых систем
+# Yandex
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 2
+
+# Google
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
 
-User-agent: YandexBot
+# Bing
+User-agent: Bingbot
 Allow: /
 Crawl-delay: 1
 
-User-agent: Bingbot
-Allow: /
-Crawl-delay: 2
-
-# Блокировка мусорных ботов
+# Block bad bots
 User-agent: MJ12bot
 Disallow: /
 
